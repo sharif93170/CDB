@@ -2,20 +2,20 @@ package model;
 
 public class Company {
 
-	private String iD;
+	private int iD;
 	private String name;
 
-	public Company(String iD, String name) {
+	public Company(int iD, String name) {
 		super();
 		this.iD = iD;
 		this.name = name;
 	}
 
-	public String getiD() {
+	public int getiD() {
 		return iD;
 	}
 
-	public void setiD(String iD) {
+	public void setiD(int iD) {
 		this.iD = iD;
 	}
 

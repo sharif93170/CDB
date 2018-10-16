@@ -4,13 +4,13 @@ import java.time.LocalDate;
 
 public class Computer {
 
-	private String id;
+	private int id;
 	private String name;
 	private LocalDate introducedDate;
 	private LocalDate discontinuedDate;
-	private String idCompany;
+	private int idCompany;
 
-	public Computer(String id, String name, LocalDate introducedDate, LocalDate discontinuedDate, String idCompany) {
+	public Computer(int id, String name, LocalDate introducedDate, LocalDate discontinuedDate, int idCompany) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -19,11 +19,11 @@ public class Computer {
 		this.idCompany = idCompany;
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -51,11 +51,11 @@ public class Computer {
 		this.discontinuedDate = discontinuedDate;
 	}
 
-	public String getIdCompany() {
+	public int getIdCompany() {
 		return idCompany;
 	}
 
-	public void setIdCompany(String idCompany) {
+	public void setIdCompany(int idCompany) {
 		this.idCompany = idCompany;
 	}
 
