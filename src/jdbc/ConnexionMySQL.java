@@ -16,9 +16,8 @@ public class ConnexionMySQL {
 		if (con == null) {
 			try {
 				con = (Connection) DriverManager.getConnection(url, login, password);
-				System.out.println("Connection reussie !");
 			} catch (SQLException e) {
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 		}
 		return con;

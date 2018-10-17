@@ -2,21 +2,21 @@ package model;
 
 public class Company {
 
-	private int iD;
+	private int id;
 	private String name;
 
-	public Company(int iD, String name) {
+	public Company(int id, String name) {
 		super();
-		this.iD = iD;
+		this.id = id;
 		this.name = name;
 	}
 
 	public int getiD() {
-		return iD;
+		return id;
 	}
 
-	public void setiD(int iD) {
-		this.iD = iD;
+	public void setiD(int id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -29,7 +29,7 @@ public class Company {
 
 	@Override
 	public String toString() {
-		return "Company [iD=" + iD + ", name=" + name + "]";
+		return "Company : id = " + id + ", Name = " + name;
 	}
 
 }

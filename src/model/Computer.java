@@ -18,6 +18,14 @@ public class Computer {
 		this.discontinuedDate = discontinuedDate;
 		this.idCompany = idCompany;
 	}
+	
+	public Computer(String name, LocalDate introducedDate, LocalDate discontinuedDate, int idCompany) {
+		super();
+		this.name = name;
+		this.introducedDate = introducedDate;
+		this.discontinuedDate = discontinuedDate;
+		this.idCompany = idCompany;
+	}
 
 	public int getId() {
 		return id;
@@ -61,8 +69,8 @@ public class Computer {
 
 	@Override
 	public String toString() {
-		return "Computer [id=" + id + ", name=" + name + ", introducedDate=" + introducedDate + ", discontinuedDate="
-				+ discontinuedDate + ", idCompany=" + idCompany + "]";
+		return "Computer : id=" + id + ", Name=" + name + ", IntroducedDate=" + introducedDate + ", DiscontinuedDate="
+				+ discontinuedDate + ", idCompany=" + idCompany;
 	}
 
 }
