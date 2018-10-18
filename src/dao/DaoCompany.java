@@ -23,7 +23,7 @@ public class DaoCompany {
 		return daoCompany;
 	}
 
-	public ArrayList<Company> getListCompanies() throws SQLException {
+	public ArrayList<Company> listCompanies() throws SQLException {
 
 		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
@@ -37,11 +37,11 @@ public class DaoCompany {
 			}
 
 			System.out.println("Success !");
-			listCompanies.stream().forEach(System.out::println);
 			return listCompanies;
 
 		} catch (Exception e) {
 			// TODO: handle exception
+			System.out.println(e.getMessage());
 			return null;
 		} finally {
 			rs.close();

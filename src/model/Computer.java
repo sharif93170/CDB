@@ -69,8 +69,8 @@ public class Computer {
 
 	@Override
 	public String toString() {
-		return "Computer : id=" + id + ", Name=" + name + ", IntroducedDate=" + introducedDate + ", DiscontinuedDate="
-				+ discontinuedDate + ", idCompany=" + idCompany;
+		return "Computer : id = " + id + ", Name = " + name + ", IntroducedDate = " + introducedDate + ", DiscontinuedDate = "
+				+ discontinuedDate + ", idCompany = " + idCompany;
 	}
 
 }

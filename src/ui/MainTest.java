@@ -32,6 +32,9 @@ public class MainTest {
 //		ComputerService.getInstance().showDetails();
 		
 //		CompanyService.getInstance().getListCompanies();
+		
+		
+//		ComputerService.getInstance().listComputers().stream().forEach(System.out::println);
 
 	}
 

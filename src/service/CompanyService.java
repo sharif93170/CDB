@@ -1,10 +1,11 @@
 package service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 import dao.DaoCompany;
 import model.Company;
+import ui.Page;
 
 public class CompanyService {
 
@@ -22,8 +23,8 @@ public class CompanyService {
 		return cs;
 	}
 
-	public ArrayList<Company> getListCompanies() throws SQLException {
-		return dc.getListCompanies();
+	public <T> List<Company> listCompanies(int choix) throws SQLException {
+		return Page.getPage(dc.listCompanies(), choix, 10);
 	}
 
 }
