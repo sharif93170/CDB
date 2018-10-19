@@ -1,16 +1,16 @@
-package model;
+package com.excilys.cdb.model;
 
 import java.time.LocalDate;
 
 public class Computer {
 
-	private int id;
+	private Long id;
 	private String name;
 	private LocalDate introducedDate;
 	private LocalDate discontinuedDate;
 	private int idCompany;
 
-	public Computer(int id, String name, LocalDate introducedDate, LocalDate discontinuedDate, int idCompany) {
+	public Computer(Long id, String name, LocalDate introducedDate, LocalDate discontinuedDate, int idCompany) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -27,11 +27,11 @@ public class Computer {
 		this.idCompany = idCompany;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -69,8 +69,8 @@ public class Computer {
 
 	@Override
 	public String toString() {
-		return "Computer : id=" + id + ", Name=" + name + ", IntroducedDate=" + introducedDate + ", DiscontinuedDate="
-				+ discontinuedDate + ", idCompany=" + idCompany;
+		return "Computer : id = " + id + ", Name = " + name + ", IntroducedDate = " + introducedDate + ", DiscontinuedDate = "
+				+ discontinuedDate + ", idCompany = " + idCompany;
 	}
 
 }

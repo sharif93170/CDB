@@ -1,4 +1,4 @@
-package dao;
+package com.excilys.cdb.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,14 +8,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Date;
 
-import jdbc.ConnexionMySQL;
-import model.Computer;
+import com.excilys.cdb.jdbc.ConnexionMySQL;
+import com.excilys.cdb.model.Computer;
 
 public class DaoComputer {
 
+	private static String SELECT_DETAILS_SQL = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id = ?";
+	private static String SELECT_ALL_SQL = "SELECT id, name, introduced, discontinued, company_id FROM computer";
+	private static String INSERT_SQL = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
+	private static String UPDATE_SQL = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
+	private static String DELETE_BY_ID_SQL = "DELETE FROM computer WHERE id = ?";
+	private static String DELETE_BY_NAME_SQL = "DELETE FROM computer WHERE name = ?";
+
 	static DaoComputer daoComputer = new DaoComputer();
 	Connection conn;
-	private ResultSet rs;
 
 	private DaoComputer() {
 		conn = ConnexionMySQL.getInstance();
@@ -26,63 +32,56 @@ public class DaoComputer {
 	}
 
 	public void showDetails(int idComputer) throws SQLException {
-		PreparedStatement preparedStatement = null;
 		ResultSet rs = null;
-		try {
-			preparedStatement = conn.prepareStatement("SELECT * FROM computer WHERE id = ?");
+		try (PreparedStatement preparedStatement = conn.prepareStatement(SELECT_DETAILS_SQL)) {
 			preparedStatement.setInt(1, idComputer);
 			rs = preparedStatement.executeQuery();
 			if (rs.next()) {
 				LocalDate introduced;
 				LocalDate discontinued;
-				if (rs.getDate(3) == null) {
+				if (rs.getDate("introduced") == null) {
 					introduced = null;
 				} else {
-					introduced = rs.getDate(3).toLocalDate();
+					introduced = rs.getDate("introduced").toLocalDate();
 				}
-				if (rs.getDate(4) == null) {
+				if (rs.getDate("discontinued") == null) {
 					discontinued = null;
 				} else {
-					discontinued = rs.getDate(4).toLocalDate();
+					discontinued = rs.getDate("discontinued").toLocalDate();
 				}
-				System.out.println("Id = " + rs.getInt(1) + ", Name = " + rs.getString(2) + ", Introduced = "
-						+ introduced + ", Discontinued = " + discontinued + ", IdCompany = " + rs.getInt(5) + ".");
+				System.out.println("Id = " + rs.getLong("id") + ", Name = " + rs.getString("name") + ", Introduced = "
+						+ introduced + ", Discontinued = " + discontinued + ", IdCompany = " + rs.getInt("company_id")
+						+ ".");
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
-		} finally {
-			rs.close();
-			preparedStatement.close();
 		}
 	}
 
-	public ArrayList<Computer> getListComputers() throws SQLException {
+	public ArrayList<Computer> findAll() throws SQLException {
 
-		PreparedStatement preparedStatement = null;
-		ResultSet rs = null;
-
-		try {
-			preparedStatement = conn.prepareStatement("SELECT * FROM computer");
-			rs = preparedStatement.executeQuery();
+		try (PreparedStatement preparedStatement = conn.prepareStatement(SELECT_ALL_SQL);
+				ResultSet rs = preparedStatement.executeQuery()) {
 			ArrayList<Computer> listComputers = new ArrayList<>();
 			while (rs.next()) {
 
 				LocalDate introduced;
 				LocalDate discontinued;
 
-				if (rs.getDate(3) == null) {
+				if (rs.getDate("introduced") == null) {
 					introduced = null;
 				} else {
-					introduced = rs.getDate(3).toLocalDate();
+					introduced = rs.getDate("introduced").toLocalDate();
 				}
-				if (rs.getDate(4) == null) {
+				if (rs.getDate("discontinued") == null) {
 					discontinued = null;
 				} else {
-					discontinued = rs.getDate(4).toLocalDate();
+					discontinued = rs.getDate("discontinued").toLocalDate();
 				}
 
-				listComputers.add(new Computer(rs.getInt(1), rs.getString(2), introduced, discontinued, rs.getInt(5)));
+				listComputers.add(new Computer(rs.getLong("id"), rs.getString("name"), introduced, discontinued,
+						rs.getInt("company_id")));
 			}
 
 			System.out.println("Success !");
@@ -92,18 +91,12 @@ public class DaoComputer {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
 			return null;
-		} finally {
-			rs.close();
-			preparedStatement.close();
 		}
 
 	}
 
 	public void create(Computer computer) {
-		PreparedStatement preparedStatement = null;
-		try {
-			preparedStatement = conn.prepareStatement(
-					"INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)");
+		try (PreparedStatement preparedStatement = conn.prepareStatement(INSERT_SQL)) {
 			preparedStatement.setString(1, computer.getName());
 			preparedStatement.setDate(2, Date.valueOf(computer.getIntroducedDate()));
 			preparedStatement.setDate(3, Date.valueOf(computer.getDiscontinuedDate()));
@@ -117,10 +110,7 @@ public class DaoComputer {
 	}
 
 	public void update(int idComputer, Computer computer) {
-		PreparedStatement preparedStatement = null;
-		try {
-			preparedStatement = conn.prepareStatement(
-					"UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?");
+		try (PreparedStatement preparedStatement = conn.prepareStatement(UPDATE_SQL)) {
 			preparedStatement.setString(1, computer.getName());
 			preparedStatement.setDate(2, Date.valueOf(computer.getIntroducedDate()));
 			preparedStatement.setDate(3, Date.valueOf(computer.getDiscontinuedDate()));
@@ -135,9 +125,7 @@ public class DaoComputer {
 	}
 
 	public void deleteById(int idComputer) {
-		PreparedStatement preparedStatement = null;
-		try {
-			preparedStatement = conn.prepareStatement("DELETE FROM computer WHERE id = ?");
+		try (PreparedStatement preparedStatement = conn.prepareStatement(DELETE_BY_ID_SQL)) {
 			preparedStatement.setInt(1, idComputer);
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit d'id : " + idComputer + " a bien été supprimé.");
@@ -148,9 +136,7 @@ public class DaoComputer {
 	}
 
 	public void deleteByName(String nameComputer) {
-		PreparedStatement preparedStatement = null;
-		try {
-			preparedStatement = conn.prepareStatement("DELETE FROM computer WHERE name = ?");
+		try (PreparedStatement preparedStatement = conn.prepareStatement(DELETE_BY_NAME_SQL)) {
 			preparedStatement.setString(1, nameComputer);
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit (" + nameComputer + ") a bien été supprimé.");

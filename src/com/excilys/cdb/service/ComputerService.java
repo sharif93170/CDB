@@ -1,12 +1,13 @@
-package service;
+package com.excilys.cdb.service;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-import dao.DaoComputer;
-import model.Computer;
+import com.excilys.cdb.dao.DaoComputer;
+import com.excilys.cdb.model.Computer;
+import com.excilys.cdb.model.Page;
 
 public class ComputerService {
 
@@ -34,8 +35,8 @@ public class ComputerService {
 		dc.showDetails(idComputer);
 	}
 
-	public ArrayList<Computer> getListComputers() throws SQLException {
-		return dc.getListComputers();
+	public <T> List<Computer> findAll(int choix) throws SQLException {
+		return Page.getPage(dc.findAll(), choix, 10);
 	}
 
 	public void create() {
@@ -50,7 +51,7 @@ public class ComputerService {
 		System.out.println("Veuillez saisir le nom de l'ordinateur à ajouter : ");
 		name = sc.nextLine();
 
-		System.out.println("Saisie de la date d'introdution : ");
+		System.out.println("Saisie de la date d'introduction : ");
 		System.out.println("Veuillez saisir le jour d'introduction :");
 		day = sc.nextInt();
 

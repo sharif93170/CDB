@@ -1,10 +1,11 @@
-package service;
+package com.excilys.cdb.service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
-import dao.DaoCompany;
-import model.Company;
+import com.excilys.cdb.dao.DaoCompany;
+import com.excilys.cdb.model.Company;
+import com.excilys.cdb.model.Page;
 
 public class CompanyService {
 
@@ -22,8 +23,8 @@ public class CompanyService {
 		return cs;
 	}
 
-	public ArrayList<Company> getListCompanies() throws SQLException {
-		return dc.getListCompanies();
+	public <T> List<Company> findAll(int choix) throws SQLException {
+		return Page.getPage(dc.findAll(), choix, 10);
 	}
 
 }

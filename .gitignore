@@ -93,3 +93,6 @@ local.properties
 
 
 # End of https://www.gitignore.io/api/git
+
+# Fichier de connection a la base
+.properties
