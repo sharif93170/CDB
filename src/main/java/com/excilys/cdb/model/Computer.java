@@ -8,23 +8,23 @@ public class Computer {
 	private String name;
 	private LocalDate introducedDate;
 	private LocalDate discontinuedDate;
-	private int idCompany;
+	private Company company;
 
-	public Computer(Long id, String name, LocalDate introducedDate, LocalDate discontinuedDate, int idCompany) {
+	public Computer(Long id, String name, LocalDate introducedDate, LocalDate discontinuedDate, Company company) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.introducedDate = introducedDate;
 		this.discontinuedDate = discontinuedDate;
-		this.idCompany = idCompany;
+		this.company = company;
 	}
 	
-	public Computer(String name, LocalDate introducedDate, LocalDate discontinuedDate, int idCompany) {
+	public Computer(String name, LocalDate introducedDate, LocalDate discontinuedDate, Company company) {
 		super();
 		this.name = name;
 		this.introducedDate = introducedDate;
 		this.discontinuedDate = discontinuedDate;
-		this.idCompany = idCompany;
+		this.company = company;
 	}
 
 	public Long getId() {
@@ -59,18 +59,18 @@ public class Computer {
 		this.discontinuedDate = discontinuedDate;
 	}
 
-	public int getIdCompany() {
-		return idCompany;
+	public Company getCompany() {
+		return company;
 	}
 
-	public void setIdCompany(int idCompany) {
-		this.idCompany = idCompany;
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 
 	@Override
 	public String toString() {
 		return "Computer : id = " + id + ", Name = " + name + ", IntroducedDate = " + introducedDate + ", DiscontinuedDate = "
-				+ discontinuedDate + ", idCompany = " + idCompany;
+				+ discontinuedDate + ", Company = " + company.getId() + " - " + company.getName();
 	}
 
 }

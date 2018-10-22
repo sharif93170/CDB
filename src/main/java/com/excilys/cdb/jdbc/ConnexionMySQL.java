@@ -6,8 +6,7 @@ import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-
-import com.mysql.jdbc.Connection;
+import java.sql.Connection;
 
 public class ConnexionMySQL {
 
@@ -32,7 +31,7 @@ public class ConnexionMySQL {
 
 		if (con == null) {
 			try {
-				con = (Connection) DriverManager.getConnection(url, login, password);
+				con = DriverManager.getConnection(url, login, password);
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 			}

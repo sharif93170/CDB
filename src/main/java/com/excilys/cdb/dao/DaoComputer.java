@@ -9,11 +9,12 @@ import java.sql.PreparedStatement;
 import java.sql.Date;
 
 import com.excilys.cdb.jdbc.ConnexionMySQL;
+import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 
 public class DaoComputer {
 
-	private static String SELECT_DETAILS_SQL = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id = ?";
+	private static String SELECT_DETAILS_SQL = "SELECT cpt.id, cpt.name, cpt.introduced, cpt.discontinued, cpn.id, cpn.name FROM computer cpt, company cpn WHERE cpt.id = ? AND cpt.company_id = cpn.id";
 	private static String SELECT_ALL_SQL = "SELECT id, name, introduced, discontinued, company_id FROM computer";
 	private static String INSERT_SQL = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private static String UPDATE_SQL = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
@@ -69,19 +70,19 @@ public class DaoComputer {
 				LocalDate introduced;
 				LocalDate discontinued;
 
-				if (rs.getDate("introduced") == null) {
+				if (rs.getDate("cpt.introduced") == null) {
 					introduced = null;
 				} else {
-					introduced = rs.getDate("introduced").toLocalDate();
+					introduced = rs.getDate("cpt.introduced").toLocalDate();
 				}
-				if (rs.getDate("discontinued") == null) {
+				if (rs.getDate("cpt.discontinued") == null) {
 					discontinued = null;
 				} else {
-					discontinued = rs.getDate("discontinued").toLocalDate();
+					discontinued = rs.getDate("cpt.discontinued").toLocalDate();
 				}
 
-				listComputers.add(new Computer(rs.getLong("id"), rs.getString("name"), introduced, discontinued,
-						rs.getInt("company_id")));
+				listComputers.add(new Computer(rs.getLong("cpt.id"), rs.getString("cpt.name"), introduced, discontinued,
+						new Company(rs.getLong("cpn.id"), rs.getString("cpn.name"))));
 			}
 
 			System.out.println("Success !");
@@ -100,7 +101,7 @@ public class DaoComputer {
 			preparedStatement.setString(1, computer.getName());
 			preparedStatement.setDate(2, Date.valueOf(computer.getIntroducedDate()));
 			preparedStatement.setDate(3, Date.valueOf(computer.getDiscontinuedDate()));
-			preparedStatement.setInt(4, computer.getIdCompany());
+			preparedStatement.setLong(4, computer.getCompany().getId());
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit a bien été crée.");
 		} catch (Exception e) {
@@ -114,7 +115,7 @@ public class DaoComputer {
 			preparedStatement.setString(1, computer.getName());
 			preparedStatement.setDate(2, Date.valueOf(computer.getIntroducedDate()));
 			preparedStatement.setDate(3, Date.valueOf(computer.getDiscontinuedDate()));
-			preparedStatement.setInt(4, computer.getIdCompany());
+			preparedStatement.setLong(4, computer.getCompany().getId());
 			preparedStatement.setInt(5, idComputer);
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit d'id : " + idComputer + " a bien été mis à jour.\n");

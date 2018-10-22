@@ -34,7 +34,7 @@ public class MainTest {
 
 //		CompanyService.getInstance().getListCompanies();
 
-//		ComputerService.getInstance().findAll(2).stream().forEach(System.out::println);
+		ComputerService.getInstance().findAll(2).stream().forEach(System.out::println);
 
 	}
 

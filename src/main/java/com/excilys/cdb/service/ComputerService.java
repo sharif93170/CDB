@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.excilys.cdb.dao.DaoComputer;
+import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Page;
 
@@ -43,7 +44,7 @@ public class ComputerService {
 		String name;
 		LocalDate introduced;
 		LocalDate discontinued;
-		int idCompany;
+		Long idCompany;
 
 		int day, month, year;
 
@@ -76,9 +77,9 @@ public class ComputerService {
 		discontinued = LocalDate.of(year, month, day);
 
 		System.out.println("Veuillez saisir l'id de la compagnie");
-		idCompany = sc.nextInt();
+		idCompany = sc.nextLong();
 
-		dc.create(new Computer(name, introduced, discontinued, idCompany));
+		dc.create(new Computer(name, introduced, discontinued, new Company(idCompany)));
 
 	}
 
@@ -87,7 +88,7 @@ public class ComputerService {
 		String name;
 		LocalDate introduced;
 		LocalDate discontinued;
-		int idCompany;
+		Long idCompany;
 
 		int day, month, year;
 
@@ -124,9 +125,9 @@ public class ComputerService {
 		discontinued = LocalDate.of(year, month, day);
 
 		System.out.println("Veuillez saisir l'id de la compagnie");
-		idCompany = sc.nextInt();
+		idCompany = sc.nextLong();
 
-		dc.update(id, new Computer(name, introduced, discontinued, idCompany));
+		dc.update(id, new Computer(name, introduced, discontinued, new Company(idCompany)));
 	}
 
 	public void deleteByName() {
