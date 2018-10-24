@@ -10,12 +10,12 @@ import java.sql.Connection;
 
 public class ConnexionMySQL {
 
-	private static Connection con;
+	private static Connection connect;
 
 	public static Connection getInstance() {
 
 		Properties props = new Properties();
-		try (FileInputStream in = new FileInputStream("/home/excilys/eclipse-workspace/CDB/config.properties")) {
+		try (FileInputStream in = new FileInputStream("/home/excilys/eclipse-workspace/CDB/src/main/resources/config.properties")) {
 			props.load(in);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
@@ -29,14 +29,14 @@ public class ConnexionMySQL {
 		String login = props.getProperty("jdbc.username");
 		String password = props.getProperty("jdbc.password");
 
-		if (con == null) {
+		if (connect == null) {
 			try {
-				con = DriverManager.getConnection(url, login, password);
+				connect = DriverManager.getConnection(url, login, password);
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 			}
 		}
-		return con;
+		return connect;
 	}
 
 }

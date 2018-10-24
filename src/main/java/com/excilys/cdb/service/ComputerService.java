@@ -12,18 +12,18 @@ import com.excilys.cdb.model.Page;
 
 public class ComputerService {
 
-	private static ComputerService cs = null;
-	DaoComputer dc;
+	private static ComputerService computerService = null;
+	DaoComputer daoComputer;
 
 	private ComputerService() {
-		dc = DaoComputer.getInstance();
+		daoComputer = DaoComputer.getInstance();
 	}
 
 	public static ComputerService getInstance() {
-		if (cs == null) {
-			cs = new ComputerService();
+		if (computerService == null) {
+			computerService = new ComputerService();
 		}
-		return cs;
+		return computerService;
 	}
 
 	public Computer showDetails() throws SQLException {
@@ -33,11 +33,11 @@ public class ComputerService {
 		System.out.println("Veuillez saisir l'id du produit pour afficher ses détails : ");
 		idComputer = sc.nextInt();
 
-		return dc.showDetails(idComputer);
+		return daoComputer.showDetails(idComputer);
 	}
 
 	public <T> List<Computer> findAll(int choix) throws SQLException {
-		return Page.getPage(dc.findAll(), choix, 10);
+		return Page.getPage(daoComputer.findAll(), choix, 10);
 	}
 
 	public void create() {
@@ -79,7 +79,7 @@ public class ComputerService {
 		System.out.println("Veuillez saisir l'id de la compagnie");
 		idCompany = sc.nextLong();
 
-		dc.create(new Computer(name, introduced, discontinued, new Company(idCompany)));
+		daoComputer.create(new Computer(name, introduced, discontinued, new Company(idCompany)));
 
 	}
 
@@ -127,7 +127,7 @@ public class ComputerService {
 		System.out.println("Veuillez saisir l'id de la compagnie");
 		idCompany = sc.nextLong();
 
-		dc.update(id, new Computer(name, introduced, discontinued, new Company(idCompany)));
+		daoComputer.update(id, new Computer(name, introduced, discontinued, new Company(idCompany)));
 	}
 
 	public void deleteByName() {
@@ -137,7 +137,7 @@ public class ComputerService {
 		System.out.println("Veuillez saisir le nom de l'ordinateur à supprimer : ");
 		nameToDelete = sc.nextLine();
 
-		dc.deleteByName(nameToDelete);
+		daoComputer.deleteByName(nameToDelete);
 	}
 
 	public void deleteById() {
@@ -147,7 +147,7 @@ public class ComputerService {
 		System.out.println("Veuillez saisir l'id de l'ordinateur à supprimer : ");
 		idToDelete = sc.nextInt();
 
-		dc.deleteById(idToDelete);
+		daoComputer.deleteById(idToDelete);
 	}
 
 }

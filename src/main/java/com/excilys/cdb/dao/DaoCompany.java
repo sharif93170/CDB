@@ -14,10 +14,10 @@ public class DaoCompany {
 	private static String SELECT_ALL_SQL = "SELECT id, name FROM company";
 
 	static DaoCompany daoCompany = new DaoCompany();
-	Connection conn;
+	Connection connect;
 
 	private DaoCompany() {
-		conn = ConnexionMySQL.getInstance();
+		connect = ConnexionMySQL.getInstance();
 	}
 
 	public static DaoCompany getInstance() {
@@ -26,7 +26,7 @@ public class DaoCompany {
 
 	public ArrayList<Company> findAll() throws SQLException {
 
-		try (PreparedStatement preparedStatement = conn.prepareStatement(SELECT_ALL_SQL);
+		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL);
 				ResultSet rs = preparedStatement.executeQuery()) {
 
 			ArrayList<Company> listCompanies = new ArrayList<>();

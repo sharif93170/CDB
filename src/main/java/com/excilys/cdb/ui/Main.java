@@ -3,19 +3,21 @@ package com.excilys.cdb.ui;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import com.excilys.cdb.exception.DernierePageException;
+import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 
 public class Main {
 
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws SQLException, PremierePageException, DernierePageException {
 
 		System.out.println("##### Bienvenue sur Computer Database #####");
 		int choix;
 		boolean continuer = true;
-		ComputerService cptServ;
-		CompanyService cpnServ;
+		ComputerService computerService;
+		CompanyService companyService;
 
 		while (continuer) {
 			System.out.println("\n##### Menu - Saisissez votre choix : #####");
@@ -37,9 +39,9 @@ public class Main {
 			switch (choix) {
 
 			case 1:
-				cptServ = ComputerService.getInstance();
+				computerService = ComputerService.getInstance();
 				System.out.println("Liste de tous les Computers : ");
-				cptServ.findAll(1).stream().forEach(System.out::println);
+				computerService.findAll(1).stream().forEach(System.out::println);
 				String choix2;
 				boolean continuer2 = true;
 				int i = 1;
@@ -47,9 +49,9 @@ public class Main {
 					System.out.println("Appuyez S pour page suivante, P pour page precedente, Q pour quitter.");
 					choix2 = sc.nextLine();
 					if ("s".equals(choix2) || "S".equals(choix2)) {
-						cptServ.findAll(i += 1).stream().forEach(System.out::println);
+						computerService.findAll(i += 1).stream().forEach(System.out::println);
 					} else if ("p".equals(choix2) || "P".equals(choix2)) {
-						cptServ.findAll(i -= 1).stream().forEach(System.out::println);
+						computerService.findAll(i -= 1).stream().forEach(System.out::println);
 					} else if ("q".equals(choix2) || "Q".equals(choix2)) {
 						continuer2 = false;
 					} else {
@@ -59,58 +61,58 @@ public class Main {
 				break;
 
 			case 2:
-				cpnServ = CompanyService.getInstance();
+				companyService = CompanyService.getInstance();
 				System.out.println("Liste de toutes les Companies : ");
-				cpnServ.findAll(1).stream().forEach(System.out::println);
+				companyService.findAll().stream().forEach(System.out::println);
 				String choix3;
 				boolean continuer3 = true;
 				int j = 1;
-				while (continuer3) {
-					System.out.println("Appuyez S pour page suivante, P pour page precedente, Q pour quitter.");
-					choix3 = sc.nextLine();
-					if ("s".equals(choix3) || "S".equals(choix3)) {
-						cpnServ.findAll(j += 1).stream().forEach(System.out::println);
-					} else if ("p".equals(choix3) || "P".equals(choix3)) {
-						cpnServ.findAll(j -= 1).stream().forEach(System.out::println);
-					} else if ("q".equals(choix3) || "Q".equals(choix3)) {
-						continuer3 = false;
-					} else {
-						System.out.println("erreur");
-					}
-				}
+//				while (continuer3) {
+//					System.out.println("Appuyez S pour page suivante, P pour page precedente, Q pour quitter.");
+//					choix3 = sc.nextLine();
+//					if ("s".equals(choix3) || "S".equals(choix3)) {
+//						companyService.findAll(j += 1).stream().forEach(System.out::println);
+//					} else if ("p".equals(choix3) || "P".equals(choix3)) {
+//						companyService.findAll(j -= 1).stream().forEach(System.out::println);
+//					} else if ("q".equals(choix3) || "Q".equals(choix3)) {
+//						continuer3 = false;
+//					} else {
+//						System.out.println("erreur");
+//					}
+//				}
 				break;
 
 			case 3:
-				cptServ = ComputerService.getInstance();
+				computerService = ComputerService.getInstance();
 				System.out.println("Détails d'un Computer : ");
-				Computer cpt = cptServ.showDetails();
+				Computer cpt = computerService.showDetails();
 				System.out.println("Id = " + cpt.getId() + ", Name = " + cpt.getName() + ", Introduced = "
 						+ cpt.getIntroducedDate() + ", Discontinued = " + cpt.getDiscontinuedDate() + ", IdCompany = "
 						+ cpt.getCompany().getId() + ", CompanyName = " + cpt.getCompany().getName() + ".");
 				break;
 
 			case 4:
-				cptServ = ComputerService.getInstance();
+				computerService = ComputerService.getInstance();
 				System.out.println("Ajout d'un Computer :");
-				cptServ.create();
+				computerService.create();
 				break;
 
 			case 5:
-				cptServ = ComputerService.getInstance();
+				computerService = ComputerService.getInstance();
 				System.out.println("Modification d'un Computer : ");
-				cptServ.update();
+				computerService.update();
 				break;
 
 			case 6:
-				cptServ = ComputerService.getInstance();
+				computerService = ComputerService.getInstance();
 				System.out.println("Suppression d'un Computer par id : ");
-				cptServ.deleteById();
+				computerService.deleteById();
 				break;
 
 			case 7:
-				cptServ = ComputerService.getInstance();
+				computerService = ComputerService.getInstance();
 				System.out.println("Suppression d'un Computer par nom : ");
-				cptServ.deleteByName();
+				computerService.deleteByName();
 				break;
 
 			case 8:
