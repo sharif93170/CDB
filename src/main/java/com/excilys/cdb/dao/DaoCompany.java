@@ -34,7 +34,6 @@ public class DaoCompany {
 				listCompanies.add(new Company(rs.getLong("id"), rs.getString("name")));
 			}
 
-			System.out.println("Success !");
 			return listCompanies;
 
 		} catch (Exception e) {

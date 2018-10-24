@@ -10,10 +10,14 @@ public class Company {
 		this.id = id;
 		this.name = name;
 	}
-	
+
 	public Company(Long id) {
 		super();
 		this.id = id;
+	}
+
+	public Company() {
+		super();
 	}
 
 	public Long getId() {

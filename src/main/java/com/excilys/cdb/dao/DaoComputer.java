@@ -32,32 +32,34 @@ public class DaoComputer {
 		return daoComputer;
 	}
 
-	public void showDetails(int idComputer) throws SQLException {
+	public Computer showDetails(int idComputer) throws SQLException {
 		ResultSet rs = null;
+		Computer cpt = null;
 		try (PreparedStatement preparedStatement = conn.prepareStatement(SELECT_DETAILS_SQL)) {
 			preparedStatement.setInt(1, idComputer);
 			rs = preparedStatement.executeQuery();
 			if (rs.next()) {
 				LocalDate introduced;
 				LocalDate discontinued;
-				if (rs.getDate("introduced") == null) {
+				if (rs.getDate("cpt.introduced") == null) {
 					introduced = null;
 				} else {
-					introduced = rs.getDate("introduced").toLocalDate();
+					introduced = rs.getDate("cpt.introduced").toLocalDate();
 				}
-				if (rs.getDate("discontinued") == null) {
+				if (rs.getDate("cpt.discontinued") == null) {
 					discontinued = null;
 				} else {
-					discontinued = rs.getDate("discontinued").toLocalDate();
+					discontinued = rs.getDate("cpt.discontinued").toLocalDate();
 				}
-				System.out.println("Id = " + rs.getLong("id") + ", Name = " + rs.getString("name") + ", Introduced = "
-						+ introduced + ", Discontinued = " + discontinued + ", IdCompany = " + rs.getInt("company_id")
-						+ ".");
+
+				cpt = new Computer(rs.getLong("cpt.id"), rs.getString("cpt.name"), introduced, discontinued,
+						new Company(rs.getLong("cpn.id"), rs.getString("cpn.name")));
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
 		}
+		return cpt;
 	}
 
 	public ArrayList<Computer> findAll() throws SQLException {
@@ -67,8 +69,7 @@ public class DaoComputer {
 			ArrayList<Computer> listComputers = new ArrayList<>();
 			while (rs.next()) {
 
-				LocalDate introduced;
-				LocalDate discontinued;
+				LocalDate introduced, discontinued;
 
 				if (rs.getDate("cpt.introduced") == null) {
 					introduced = null;
@@ -84,8 +85,6 @@ public class DaoComputer {
 				listComputers.add(new Computer(rs.getLong("cpt.id"), rs.getString("cpt.name"), introduced, discontinued,
 						new Company(rs.getLong("cpn.id"), rs.getString("cpn.name"))));
 			}
-
-			System.out.println("Success !");
 			return listComputers;
 
 		} catch (Exception e) {
@@ -96,7 +95,7 @@ public class DaoComputer {
 
 	}
 
-	public void create(Computer computer) {
+	public boolean create(Computer computer) {
 		try (PreparedStatement preparedStatement = conn.prepareStatement(INSERT_SQL)) {
 			preparedStatement.setString(1, computer.getName());
 			preparedStatement.setDate(2, Date.valueOf(computer.getIntroducedDate()));
@@ -104,13 +103,15 @@ public class DaoComputer {
 			preparedStatement.setLong(4, computer.getCompany().getId());
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit a bien été crée.");
+			return true;
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
+			return false;
 		}
 	}
 
-	public void update(int idComputer, Computer computer) {
+	public boolean update(int idComputer, Computer computer) {
 		try (PreparedStatement preparedStatement = conn.prepareStatement(UPDATE_SQL)) {
 			preparedStatement.setString(1, computer.getName());
 			preparedStatement.setDate(2, Date.valueOf(computer.getIntroducedDate()));
@@ -119,31 +120,37 @@ public class DaoComputer {
 			preparedStatement.setInt(5, idComputer);
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit d'id : " + idComputer + " a bien été mis à jour.\n");
+			return true;
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
+			return false;
 		}
 	}
 
-	public void deleteById(int idComputer) {
+	public boolean deleteById(int idComputer) {
 		try (PreparedStatement preparedStatement = conn.prepareStatement(DELETE_BY_ID_SQL)) {
 			preparedStatement.setInt(1, idComputer);
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit d'id : " + idComputer + " a bien été supprimé.");
+			return true;
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
+			return false;
 		}
 	}
 
-	public void deleteByName(String nameComputer) {
+	public boolean deleteByName(String nameComputer) {
 		try (PreparedStatement preparedStatement = conn.prepareStatement(DELETE_BY_NAME_SQL)) {
 			preparedStatement.setString(1, nameComputer);
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit (" + nameComputer + ") a bien été supprimé.");
+			return true;
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
+			return false;
 		}
 	}
 

@@ -26,14 +26,14 @@ public class ComputerService {
 		return cs;
 	}
 
-	public void showDetails() throws SQLException {
+	public Computer showDetails() throws SQLException {
 		int idComputer;
 
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Veuillez saisir l'id du produit pour afficher ses détails : ");
 		idComputer = sc.nextInt();
 
-		dc.showDetails(idComputer);
+		return dc.showDetails(idComputer);
 	}
 
 	public <T> List<Computer> findAll(int choix) throws SQLException {

@@ -18,13 +18,17 @@ public class Computer {
 		this.discontinuedDate = discontinuedDate;
 		this.company = company;
 	}
-	
+
 	public Computer(String name, LocalDate introducedDate, LocalDate discontinuedDate, Company company) {
 		super();
 		this.name = name;
 		this.introducedDate = introducedDate;
 		this.discontinuedDate = discontinuedDate;
 		this.company = company;
+	}
+
+	public Computer() {
+		super();
 	}
 
 	public Long getId() {
@@ -69,8 +73,9 @@ public class Computer {
 
 	@Override
 	public String toString() {
-		return "Computer : id = " + id + ", Name = " + name + ", IntroducedDate = " + introducedDate + ", DiscontinuedDate = "
-				+ discontinuedDate + ", Company = " + company.getId() + " - " + company.getName();
+		return "Computer : id = " + id + ", Name = " + name + ", IntroducedDate = " + introducedDate
+				+ ", DiscontinuedDate = " + discontinuedDate + ", Company = " + company.getId() + " - "
+				+ company.getName();
 	}
 
 }

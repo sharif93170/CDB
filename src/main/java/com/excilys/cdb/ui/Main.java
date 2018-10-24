@@ -3,6 +3,7 @@ package com.excilys.cdb.ui;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 
@@ -82,7 +83,10 @@ public class Main {
 			case 3:
 				cptServ = ComputerService.getInstance();
 				System.out.println("Détails d'un Computer : ");
-				cptServ.showDetails();
+				Computer cpt = cptServ.showDetails();
+				System.out.println("Id = " + cpt.getId() + ", Name = " + cpt.getName() + ", Introduced = "
+						+ cpt.getIntroducedDate() + ", Discontinued = " + cpt.getDiscontinuedDate() + ", IdCompany = "
+						+ cpt.getCompany().getId() + ", CompanyName = " + cpt.getCompany().getName() + ".");
 				break;
 
 			case 4:
