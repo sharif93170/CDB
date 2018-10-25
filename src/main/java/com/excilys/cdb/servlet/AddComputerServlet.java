@@ -17,6 +17,10 @@ import com.excilys.cdb.service.CompanyService;
 
 public class AddComputerServlet extends HttpServlet {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3920808878587122754L;
 	CompanyService companyService;
 
 	@Override
