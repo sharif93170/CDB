@@ -15,7 +15,8 @@ public class ConnexionMySQL {
 	public static Connection getInstance() {
 
 		Properties props = new Properties();
-		try (FileInputStream in = new FileInputStream("/home/excilys/eclipse-workspace/CDB/src/main/resources/config.properties")) {
+		try (FileInputStream in = new FileInputStream(
+				"/home/excilys/eclipse-workspace/CDB/src/main/resources/config.properties")) {
 			props.load(in);
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
@@ -31,8 +32,11 @@ public class ConnexionMySQL {
 
 		if (connect == null) {
 			try {
+				Class.forName("com.mysql.cj.jdbc.Driver");
 				connect = DriverManager.getConnection(url, login, password);
 			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			} catch (ClassNotFoundException e) {
 				System.out.println(e.getMessage());
 			}
 		}
