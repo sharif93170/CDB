@@ -1,22 +1,41 @@
 package com.excilys.cdb.model;
 
-import java.util.Collections;
 import java.util.List;
 
-public class Page<T> {
+import com.excilys.cdb.exception.DernierePageException;
+import com.excilys.cdb.exception.PremierePageException;
 
-	public static <T> List<T> getPage(List<T> sourceList, int page, int pageSize) {
+public class Page {
+
+	private static int page = 1;
+	private static int pageSize = 10;
+
+	public static <T> List<T> pagination(List<T> sourceList) throws PremierePageException, DernierePageException {
 		if (pageSize <= 0 || page <= 0) {
-			throw new IllegalArgumentException("invalid page size: " + pageSize);
+			throw new PremierePageException();
 		}
 
 		int fromIndex = (page - 1) * pageSize;
 		if (sourceList == null || sourceList.size() < fromIndex) {
-			return Collections.emptyList();
+			throw new DernierePageException();
 		}
-
-		// toIndex exclusive
 		return sourceList.subList(fromIndex, Math.min(fromIndex + pageSize, sourceList.size()));
+	}
+
+	public static int getPage() {
+		return page;
+	}
+
+	public static int getPageSize() {
+		return pageSize;
+	}
+
+	public static void setPage(int page) {
+		Page.page = page;
+	}
+
+	public static void setPageSize(int pageSize) {
+		Page.pageSize = pageSize;
 	}
 
 }

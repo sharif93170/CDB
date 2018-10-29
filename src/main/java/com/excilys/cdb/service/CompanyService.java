@@ -8,7 +8,6 @@ import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Page;
-import com.excilys.cdb.model.PageNew;
 
 public class CompanyService {
 
@@ -27,8 +26,7 @@ public class CompanyService {
 	}
 
 	public <T> List<Company> findAll() throws SQLException, PremierePageException, DernierePageException {
-//		return Page.getPage(daoCompany.findAll(), choix, 10);
-		return PageNew.pagination(daoCompany.findAll(), 1, 10);
+		return Page.pagination(daoCompany.findAll());
 	}
 
 }

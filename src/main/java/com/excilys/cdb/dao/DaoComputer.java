@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Date;
 
+import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.jdbc.ConnexionMySQL;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
@@ -62,7 +63,7 @@ public class DaoComputer {
 		return computer;
 	}
 
-	public ArrayList<Computer> findAll() throws SQLException {
+	public ArrayList<Computer> findAll() throws SQLException, PremierePageException {
 
 		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL);
 				ResultSet rs = preparedStatement.executeQuery()) {
@@ -89,8 +90,7 @@ public class DaoComputer {
 			return listComputers;
 
 		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 
