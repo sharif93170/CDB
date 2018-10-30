@@ -12,11 +12,13 @@ import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.jdbc.ConnexionMySQL;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
+import com.mysql.cj.xdevapi.Result;
 
 public class DaoComputer {
 
 	private static String SELECT_DETAILS_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id WHERE computer.id = ?";
 	private static String SELECT_ALL_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id";
+	private static String SELECT_BY_NAME_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id WHERE computer.name = ?";
 	private static String INSERT_SQL = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private static String UPDATE_SQL = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 	private static String DELETE_BY_ID_SQL = "DELETE FROM computer WHERE id = ?";
@@ -63,6 +65,40 @@ public class DaoComputer {
 		return computer;
 	}
 
+	public ArrayList<Computer> findByName(String name) throws SQLException, PremierePageException {
+		ResultSet rs = null;
+		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_BY_NAME_SQL)) {
+			ArrayList<Computer> listComputers = new ArrayList<>();
+			preparedStatement.setString(1, name);
+			rs = preparedStatement.executeQuery();
+			while (rs.next()) {
+
+				LocalDate introduced, discontinued;
+
+				if (rs.getDate("computer.introduced") == null) {
+					introduced = null;
+				} else {
+					introduced = rs.getDate("computer.introduced").toLocalDate();
+				}
+				if (rs.getDate("computer.discontinued") == null) {
+					discontinued = null;
+				} else {
+					discontinued = rs.getDate("computer.discontinued").toLocalDate();
+				}
+
+				listComputers.add(new Computer(rs.getLong("computer.id"), rs.getString("computer.name"), introduced,
+						discontinued, new Company(rs.getLong("company.id"), rs.getString("company.name"))));
+
+			}
+			return listComputers;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
 	public ArrayList<Computer> findAll() throws SQLException, PremierePageException {
 
 		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL);
@@ -99,9 +135,18 @@ public class DaoComputer {
 	public boolean create(Computer computer) {
 		try (PreparedStatement preparedStatement = connect.prepareStatement(INSERT_SQL)) {
 			preparedStatement.setString(1, computer.getName());
-			preparedStatement.setDate(2, Date.valueOf(computer.getIntroducedDate()));
-			preparedStatement.setDate(3, Date.valueOf(computer.getDiscontinuedDate()));
+			if (computer.getIntroducedDate() == null) {
+				preparedStatement.setDate(2, null);
+			} else {
+				preparedStatement.setDate(2, Date.valueOf(computer.getIntroducedDate()));
+			}
+			if (computer.getDiscontinuedDate() == null) {
+				preparedStatement.setDate(3, null);
+			} else {
+				preparedStatement.setDate(3, Date.valueOf(computer.getDiscontinuedDate()));
+			}
 			preparedStatement.setLong(4, computer.getCompany().getId());
+
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit a bien été crée.");
 			return true;

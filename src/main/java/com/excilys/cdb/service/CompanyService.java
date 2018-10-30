@@ -26,7 +26,7 @@ public class CompanyService {
 	}
 
 	public <T> List<Company> findAll() throws SQLException, PremierePageException, DernierePageException {
-		return Page.pagination(daoCompany.findAll());
+		return daoCompany.findAll();
 	}
 
 }

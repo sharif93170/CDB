@@ -73,8 +73,7 @@ public class Main {
 			case 2:
 				companyService = CompanyService.getInstance();
 				System.out.println("Liste de toutes les Companies : ");
-				Page.setPage(1);
-				companyService.findAll().stream().forEach(System.out::println);
+				Page.pagination(companyService.findAll()).stream().forEach(System.out::println);
 				String choix3;
 				boolean continuer3 = true;
 				while (continuer3) {
@@ -83,10 +82,10 @@ public class Main {
 						choix3 = sc.nextLine();
 						if ("s".equals(choix3) || "S".equals(choix3)) {
 							Page.setPage(Page.getPage() + 1);
-							companyService.findAll().stream().forEach(System.out::println);
+							Page.pagination(companyService.findAll()).stream().forEach(System.out::println);
 						} else if ("p".equals(choix3) || "P".equals(choix3)) {
 							Page.setPage(Page.getPage() - 1);
-							companyService.findAll().stream().forEach(System.out::println);
+							Page.pagination(companyService.findAll()).stream().forEach(System.out::println);
 						} else if ("q".equals(choix3) || "Q".equals(choix3)) {
 							continuer3 = false;
 						} else {
