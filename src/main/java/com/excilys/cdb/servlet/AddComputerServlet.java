@@ -3,8 +3,6 @@ package com.excilys.cdb.servlet;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -35,14 +33,13 @@ public class AddComputerServlet extends HttpServlet {
 		try {
 			List<Company> listCompany = companyService.findAll();
 			request.setAttribute("companies", listCompany);
-		} catch (SQLException ex) {
-			System.out.println(ex.getMessage());
-		} catch (PremierePageException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DernierePageException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (SQLException sql) {
+			sql.printStackTrace();
+			;
+		} catch (PremierePageException pp) {
+			pp.printStackTrace();
+		} catch (DernierePageException dp) {
+			dp.printStackTrace();
 		}
 		this.getServletContext().getRequestDispatcher("/WEB-INF/views/addComputer.jsp").forward(request, response);
 	}

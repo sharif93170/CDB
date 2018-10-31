@@ -12,7 +12,6 @@ import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.jdbc.ConnexionMySQL;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.mysql.cj.xdevapi.Result;
 
 public class DaoComputer {
 
@@ -35,7 +34,7 @@ public class DaoComputer {
 		return daoComputer;
 	}
 
-	public Computer showDetails(int idComputer) throws SQLException {
+	public Computer showDetails(int idComputer) {
 		ResultSet rs = null;
 		Computer computer = null;
 		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_DETAILS_SQL)) {
@@ -58,9 +57,8 @@ public class DaoComputer {
 				computer = new Computer(rs.getLong("computer.id"), rs.getString("computer.name"), introduced,
 						discontinued, new Company(rs.getLong("company.id"), rs.getString("company.name")));
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return computer;
 	}
@@ -92,7 +90,7 @@ public class DaoComputer {
 			}
 			return listComputers;
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -125,7 +123,7 @@ public class DaoComputer {
 			}
 			return listComputers;
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -150,9 +148,8 @@ public class DaoComputer {
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit a bien été crée.");
 			return true;
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -167,9 +164,8 @@ public class DaoComputer {
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit d'id : " + idComputer + " a bien été mis à jour.\n");
 			return true;
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -180,9 +176,8 @@ public class DaoComputer {
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit d'id : " + idComputer + " a bien été supprimé.");
 			return true;
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -193,9 +188,8 @@ public class DaoComputer {
 			preparedStatement.executeUpdate();
 			System.out.println("Le produit (" + nameComputer + ") a bien été supprimé.");
 			return true;
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}

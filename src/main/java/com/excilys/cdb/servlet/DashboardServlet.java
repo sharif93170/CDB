@@ -1,6 +1,7 @@
 package com.excilys.cdb.servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -8,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.cdb.exception.DernierePageException;
+import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.service.ComputerService;
@@ -39,8 +42,12 @@ public class DashboardServlet extends HttpServlet {
 				Page.setPageSize(Integer.parseInt(request.getParameter("size")));
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (SQLException sql) {
+			sql.printStackTrace();
+		} catch (PremierePageException pp) {
+			pp.printStackTrace();
+		} catch (DernierePageException dp) {
+			dp.printStackTrace();
 		}
 
 		request.setAttribute("computerTotal", computer.size());

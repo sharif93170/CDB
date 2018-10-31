@@ -7,7 +7,6 @@ import com.excilys.cdb.dao.DaoCompany;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Company;
-import com.excilys.cdb.model.Page;
 
 public class CompanyService {
 

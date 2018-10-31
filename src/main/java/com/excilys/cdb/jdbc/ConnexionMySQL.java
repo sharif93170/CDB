@@ -18,12 +18,10 @@ public class ConnexionMySQL {
 		try (FileInputStream in = new FileInputStream(
 				"/home/excilys/eclipse-workspace/CDB/src/main/resources/config.properties")) {
 			props.load(in);
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (FileNotFoundException fileNotFound) {
+			fileNotFound.printStackTrace();
+		} catch (IOException io) {
+			io.printStackTrace();
 		}
 
 		String url = props.getProperty("jdbc.url");
@@ -34,10 +32,10 @@ public class ConnexionMySQL {
 			try {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 				connect = DriverManager.getConnection(url, login, password);
-			} catch (SQLException e) {
-				System.out.println(e.getMessage());
+			} catch (SQLException sql) {
+				sql.printStackTrace();
 			} catch (ClassNotFoundException e) {
-				System.out.println(e.getMessage());
+				e.printStackTrace();
 			}
 		}
 		return connect;

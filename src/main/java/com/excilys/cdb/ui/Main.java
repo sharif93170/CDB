@@ -34,14 +34,13 @@ public class Main {
 			System.out.println("8 - Quitter");
 
 			System.out.println("\nVotre choix : ");
-
 			Scanner sc = new Scanner(System.in);
 			choix = sc.nextInt();
 			sc.nextLine();
 
 			switch (choix) {
 
-			case 1:
+			case 1: // Lister tous les Computers
 				computerService = ComputerService.getInstance();
 				System.out.println("Liste de tous les Computers : ");
 				Page.pagination(computerService.findAll()).stream().forEach(System.out::println);
@@ -70,7 +69,7 @@ public class Main {
 				}
 				break;
 
-			case 2:
+			case 2: // Lister toutes les Companies
 				companyService = CompanyService.getInstance();
 				System.out.println("Liste de toutes les Companies : ");
 				Page.pagination(companyService.findAll()).stream().forEach(System.out::println);
@@ -99,7 +98,7 @@ public class Main {
 				}
 				break;
 
-			case 3:
+			case 3: // Afficher les détails d'un Computer
 				computerService = ComputerService.getInstance();
 				System.out.println("Veuillez saisir l'id du produit pour afficher ses détails : ");
 				System.out.println("Détails d'un Computer : ");
@@ -111,7 +110,7 @@ public class Main {
 						+ cpt.getCompany().getId() + ", CompanyName = " + cpt.getCompany().getName() + ".");
 				break;
 
-			case 4:
+			case 4: // Créer un nouveau Computer
 				computerService = ComputerService.getInstance();
 
 				System.out.println("Ajout d'un Computer :");
@@ -157,7 +156,7 @@ public class Main {
 						new Computer(createName, createIntroduced, createDiscontinued, new Company(createIdCompany)));
 				break;
 
-			case 5:
+			case 5: // Modifier un Computer
 				computerService = ComputerService.getInstance();
 				System.out.println("Modification d'un Computer : ");
 				int updateId;
@@ -205,7 +204,7 @@ public class Main {
 						new Computer(updateName, updateIntroduced, updateDiscontinued, new Company(updateIdCompany)));
 				break;
 
-			case 6:
+			case 6: // Supprimer un Computer par id
 				computerService = ComputerService.getInstance();
 				System.out.println("Suppression d'un Computer par id : ");
 
@@ -218,7 +217,7 @@ public class Main {
 				computerService.deleteById(idToDelete);
 				break;
 
-			case 7:
+			case 7: // Supprimer un Computer par nom
 				computerService = ComputerService.getInstance();
 				System.out.println("Suppression d'un Computer par nom : ");
 
@@ -230,7 +229,7 @@ public class Main {
 				computerService.deleteByName(nameToDelete);
 				break;
 
-			case 8:
+			case 8: // Quitter
 				continuer = false;
 				System.out.println("Au revoir, à la prochaine !");
 				break;
@@ -240,6 +239,8 @@ public class Main {
 				break;
 
 			}
+
+			sc.close();
 
 		}
 

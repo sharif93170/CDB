@@ -36,9 +36,8 @@ public class DaoCompany {
 
 			return listCompanies;
 
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return null;
 		}
 

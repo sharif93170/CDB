@@ -1,16 +1,12 @@
 package com.excilys.cdb.service;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Scanner;
 
 import com.excilys.cdb.dao.DaoComputer;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
-import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.model.Page;
 
 public class ComputerService {
 
