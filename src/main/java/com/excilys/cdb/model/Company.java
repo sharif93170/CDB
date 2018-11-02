@@ -1,21 +1,30 @@
-package model;
+package com.excilys.cdb.model;
 
 public class Company {
 
-	private int id;
+	private Long id;
 	private String name;
 
-	public Company(int id, String name) {
+	public Company(Long id, String name) {
 		super();
 		this.id = id;
 		this.name = name;
 	}
 
-	public int getiD() {
+	public Company(Long id) {
+		super();
+		this.id = id;
+	}
+
+	public Company() {
+		super();
+	}
+
+	public Long getId() {
 		return id;
 	}
 
-	public void setiD(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
