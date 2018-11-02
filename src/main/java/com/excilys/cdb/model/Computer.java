@@ -73,14 +73,9 @@ public class Computer {
 
 	@Override
 	public String toString() {
-<<<<<<< HEAD:src/main/java/com/excilys/cdb/model/Computer.java
 		return "Computer : id = " + id + ", Name = " + name + ", IntroducedDate = " + introducedDate
 				+ ", DiscontinuedDate = " + discontinuedDate + ", Company = " + company.getId() + " - "
 				+ company.getName();
-=======
-		return "Computer : id = " + id + ", Name = " + name + ", IntroducedDate = " + introducedDate + ", DiscontinuedDate = "
-				+ discontinuedDate + ", idCompany = " + idCompany;
->>>>>>> master:src/model/Computer.java
 	}
 
 }
