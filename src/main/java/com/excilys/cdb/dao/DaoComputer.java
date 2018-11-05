@@ -4,6 +4,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Date;
@@ -14,6 +18,8 @@ import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 
 public class DaoComputer {
+
+//	static Logger logger = LoggerFactory.getLogger(DaoComputer.class);
 
 	private static String SELECT_DETAILS_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id WHERE computer.id = ?";
 	private static String SELECT_ALL_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id";
@@ -54,19 +60,23 @@ public class DaoComputer {
 					discontinued = rs.getDate("computer.discontinued").toLocalDate();
 				}
 
-				computer = new Computer(rs.getLong("computer.id"), rs.getString("computer.name"), introduced,
-						discontinued, new Company(rs.getLong("company.id"), rs.getString("company.name")));
+				computer = new Computer.ComputerBuilder(rs.getString("computer.name")).id(rs.getLong("computer.id"))
+						.introduceDate(introduced).discontinuedDate(discontinued)
+						.company(new Company.CompanyBuilder(rs.getLong("company.id")).name(rs.getString("company.name"))
+								.build())
+						.build();
+
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} catch (SQLException sql) {
+//			logger.error("SQL exception !", sql);
 		}
 		return computer;
 	}
 
 	public ArrayList<Computer> findByName(String name) throws SQLException, PremierePageException {
 		ResultSet rs = null;
+		ArrayList<Computer> listComputers = new ArrayList<>();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_BY_NAME_SQL)) {
-			ArrayList<Computer> listComputers = new ArrayList<>();
 			preparedStatement.setString(1, name);
 			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
@@ -84,24 +94,24 @@ public class DaoComputer {
 					discontinued = rs.getDate("computer.discontinued").toLocalDate();
 				}
 
-				listComputers.add(new Computer(rs.getLong("computer.id"), rs.getString("computer.name"), introduced,
-						discontinued, new Company(rs.getLong("company.id"), rs.getString("company.name"))));
+				listComputers.add(new Computer.ComputerBuilder(rs.getString("computer.name"))
+						.id(rs.getLong("computer.id")).introduceDate(introduced).discontinuedDate(discontinued)
+						.company(new Company.CompanyBuilder(rs.getLong("company.id")).name(rs.getString("company.name"))
+								.build())
+						.build());
 
 			}
-			return listComputers;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+		} catch (SQLException sql) {
+//			logger.error("SQL exception !", sql);
 		}
-
+		return listComputers;
 	}
 
 	public ArrayList<Computer> findAll() throws SQLException, PremierePageException {
 
+		ArrayList<Computer> listComputers = new ArrayList<>();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL);
 				ResultSet rs = preparedStatement.executeQuery()) {
-			ArrayList<Computer> listComputers = new ArrayList<>();
 			while (rs.next()) {
 
 				LocalDate introduced, discontinued;
@@ -117,20 +127,20 @@ public class DaoComputer {
 					discontinued = rs.getDate("computer.discontinued").toLocalDate();
 				}
 
-				listComputers.add(new Computer(rs.getLong("computer.id"), rs.getString("computer.name"), introduced,
-						discontinued, new Company(rs.getLong("company.id"), rs.getString("company.name"))));
+				listComputers.add(new Computer.ComputerBuilder(rs.getString("computer.name"))
+						.id(rs.getLong("computer.id")).introduceDate(introduced).discontinuedDate(discontinued)
+						.company(new Company.CompanyBuilder(rs.getLong("company.id")).name(rs.getString("company.name"))
+								.build())
+						.build());
 
 			}
-			return listComputers;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+		} catch (SQLException sql) {
+//			logger.error("SQL exception !", sql);
 		}
-
+		return listComputers;
 	}
 
-	public boolean create(Computer computer) {
+	public void create(Computer computer) {
 		try (PreparedStatement preparedStatement = connect.prepareStatement(INSERT_SQL)) {
 			preparedStatement.setString(1, computer.getName());
 			if (computer.getIntroducedDate() == null) {
@@ -146,15 +156,13 @@ public class DaoComputer {
 			preparedStatement.setLong(4, computer.getCompany().getId());
 
 			preparedStatement.executeUpdate();
-			System.out.println("Le produit a bien été crée.");
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+//			logger.info("Le produit a bien été crée.");
+		} catch (SQLException sql) {
+//			logger.error("SQL exception !", sql);
 		}
 	}
 
-	public boolean update(int idComputer, Computer computer) {
+	public void update(int idComputer, Computer computer) {
 		try (PreparedStatement preparedStatement = connect.prepareStatement(UPDATE_SQL)) {
 			preparedStatement.setString(1, computer.getName());
 			preparedStatement.setDate(2, Date.valueOf(computer.getIntroducedDate()));
@@ -162,35 +170,29 @@ public class DaoComputer {
 			preparedStatement.setLong(4, computer.getCompany().getId());
 			preparedStatement.setInt(5, idComputer);
 			preparedStatement.executeUpdate();
-			System.out.println("Le produit d'id : " + idComputer + " a bien été mis à jour.\n");
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+//			logger.info("Le produit d'id : " + idComputer + " a bien été mis à jour.");
+		} catch (SQLException sql) {
+//			logger.error("SQL exception !", sql);
 		}
 	}
 
-	public boolean deleteById(int idComputer) {
+	public void deleteById(int idComputer) {
 		try (PreparedStatement preparedStatement = connect.prepareStatement(DELETE_BY_ID_SQL)) {
 			preparedStatement.setInt(1, idComputer);
 			preparedStatement.executeUpdate();
-			System.out.println("Le produit d'id : " + idComputer + " a bien été supprimé.");
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+//			logger.info("Le produit d'id : " + idComputer + " a bien été supprimé.");
+		} catch (SQLException sql) {
+//			logger.error("SQL exception !", sql);
 		}
 	}
 
-	public boolean deleteByName(String nameComputer) {
+	public void deleteByName(String nameComputer) {
 		try (PreparedStatement preparedStatement = connect.prepareStatement(DELETE_BY_NAME_SQL)) {
 			preparedStatement.setString(1, nameComputer);
 			preparedStatement.executeUpdate();
-			System.out.println("Le produit (" + nameComputer + ") a bien été supprimé.");
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+//			logger.info("Le produit (" + nameComputer + ") a bien été supprimé.");
+		} catch (SQLException sql) {
+//			logger.error("SQL exception !", sql);
 		}
 	}
 

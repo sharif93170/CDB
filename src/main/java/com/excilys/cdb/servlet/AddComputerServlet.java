@@ -52,24 +52,22 @@ public class AddComputerServlet extends HttpServlet {
 		String discontinuedDate = request.getParameter("discontinued");
 		Long idCompany = Long.parseLong(request.getParameter("companyId"));
 
-		Computer computer = new Computer();
-		Company company = new Company(idCompany);
-
-		computer.setName(computerName);
-		if (!introducedDate.equals("")) {
-			computer.setIntroducedDate(Date.valueOf(introducedDate).toLocalDate());
-		} else {
-			computer.setIntroducedDate(null);
-		}
-		if (!discontinuedDate.equals("")) {
-			computer.setDiscontinuedDate(Date.valueOf(discontinuedDate).toLocalDate());
-		} else {
-			computer.setDiscontinuedDate(null);
-		}
-		computer.setCompany(company);
+//		if (!introducedDate.equals("")) {
+//			computer.setIntroducedDate(Date.valueOf(introducedDate).toLocalDate());
+//		} else {
+//			computer.setIntroducedDate(null);
+//		}
+//		if (!discontinuedDate.equals("")) {
+//			computer.setDiscontinuedDate(Date.valueOf(discontinuedDate).toLocalDate());
+//		} else {
+//			computer.setDiscontinuedDate(null);
+//		}
 
 		computerService = ComputerService.getInstance();
-		computerService.create(computer);
+		computerService.create(
+				new Computer.ComputerBuilder(computerName).introduceDate(Date.valueOf(introducedDate).toLocalDate())
+						.discontinuedDate(Date.valueOf(discontinuedDate).toLocalDate())
+						.company(new Company.CompanyBuilder(idCompany).build()).build());
 
 		response.sendRedirect("dashboard");
 	}

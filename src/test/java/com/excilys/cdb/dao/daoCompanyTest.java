@@ -26,18 +26,18 @@ public class daoCompanyTest {
 		dc = null;
 	}
 
-	@Test
-	public void testFindAllEquals() {
-		try {
-			ArrayList<Company> result = dc.findAll();
-			Company company = new Company();
-			for (int i = 0; i < result.size(); i++) {
-				assertEquals(company.getClass(), result.get(i).getClass());
-			}
-		} catch (Exception e) {
-			fail("Exception inattendue");
-		}
-	}
+//	@Test
+//	public void testFindAllEquals() {
+//		try {
+//			ArrayList<Company> result = dc.findAll();
+//			Company company = new Company();
+//			for (int i = 0; i < result.size(); i++) {
+//				assertEquals(company.getClass(), result.get(i).getClass());
+//			}
+//		} catch (Exception e) {
+//			fail("Exception inattendue");
+//		}
+//	}
 
 	@Test
 	public void testFindAllNotNull() {

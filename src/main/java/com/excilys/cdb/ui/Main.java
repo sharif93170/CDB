@@ -4,6 +4,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Company;
@@ -13,6 +16,8 @@ import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 
 public class Main {
+
+	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	public static void main(String[] args) throws SQLException, PremierePageException, DernierePageException {
 
@@ -62,9 +67,9 @@ public class Main {
 							System.out.println("Mauvaise saisie, veuillez utiliser 'S', 'P' ou 'Q'.");
 						}
 					} catch (PremierePageException p) {
-						System.out.println(p.getMessage());
+						logger.error("Il s'agit de la premiere page, impossible de faire precedent !", p);
 					} catch (DernierePageException d) {
-						System.out.println(d.getMessage());
+						logger.error("Il s'agit de la derniere page, impossible de faire suivant !", d);
 					}
 				}
 				break;
@@ -91,9 +96,9 @@ public class Main {
 							System.out.println("Mauvaise saisie, veuillez utiliser 'S', 'P' ou 'Q'.");
 						}
 					} catch (PremierePageException p) {
-						System.out.println(p.getMessage());
+						logger.error("Il s'agit de la premiere page, impossible de faire precedent !", p);
 					} catch (DernierePageException d) {
-						System.out.println(d.getMessage());
+						logger.error("Il s'agit de la derniere page, impossible de faire suivant !", d);
 					}
 				}
 				break;
@@ -132,7 +137,7 @@ public class Main {
 				System.out.println("Veuillez saisir le mois d'introduction :");
 				createMonth = sc.nextInt();
 
-				System.out.println("Veuillez saisir l'année d'introduction :");
+				System.out.println("Veuillez saisir l'annÃ©e d'introduction :");
 				createYear = sc.nextInt();
 
 				createIntroduced = LocalDate.of(createYear, createMonth, createDay);
@@ -144,7 +149,7 @@ public class Main {
 				System.out.println("Veuillez saisir le mois d'arret : ");
 				createMonth = sc.nextInt();
 
-				System.out.println("Veuillez saisir l'année d'arret : ");
+				System.out.println("Veuillez saisir l'annÃ©e d'arret : ");
 				createYear = sc.nextInt();
 
 				createDiscontinued = LocalDate.of(createYear, createMonth, createDay);
@@ -152,8 +157,9 @@ public class Main {
 				System.out.println("Veuillez saisir l'id de la compagnie");
 				createIdCompany = sc.nextLong();
 
-				computerService.create(
-						new Computer(createName, createIntroduced, createDiscontinued, new Company(createIdCompany)));
+				computerService.create(new Computer.ComputerBuilder(createName).introduceDate(createIntroduced)
+						.discontinuedDate(createDiscontinued)
+						.company(new Company.CompanyBuilder(createIdCompany).build()).build());
 				break;
 
 			case 5: // Modifier un Computer
@@ -181,7 +187,7 @@ public class Main {
 				System.out.println("Veuillez saisir le nouveau mois d'introduction :");
 				updateMonth = sc.nextInt();
 
-				System.out.println("Veuillez saisir la nouvelle année d'introduction :");
+				System.out.println("Veuillez saisir la nouvelle annÃ©e d'introduction :");
 				updateYear = sc.nextInt();
 
 				updateIntroduced = LocalDate.of(updateYear, updateMonth, updateDay);
@@ -190,7 +196,7 @@ public class Main {
 				System.out.println("Veuillez saisir le nouveau jour d'arret : ");
 				updateDay = sc.nextInt();
 
-				System.out.println("Veuillez saisir le nouveau  mois d'arret : ");
+				System.out.println("Veuillez saisir le nouveau mois d'arret : ");
 				updateMonth = sc.nextInt();
 
 				System.out.println("Veuillez saisir la nouvelle année d'arret : ");
@@ -200,8 +206,11 @@ public class Main {
 
 				System.out.println("Veuillez saisir l'id de la compagnie");
 				updateIdCompany = sc.nextLong();
+
 				computerService.update(updateId,
-						new Computer(updateName, updateIntroduced, updateDiscontinued, new Company(updateIdCompany)));
+						new Computer.ComputerBuilder(updateName).introduceDate(updateIntroduced)
+								.discontinuedDate(updateDiscontinued)
+								.company(new Company.CompanyBuilder(updateIdCompany).build()).build());
 				break;
 
 			case 6: // Supprimer un Computer par id
