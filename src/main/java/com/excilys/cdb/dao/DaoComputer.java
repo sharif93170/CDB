@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Date;
@@ -21,9 +22,10 @@ public class DaoComputer {
 
 //	static Logger logger = LoggerFactory.getLogger(DaoComputer.class);
 
+	private static String COUNT_SQL = "SELECT COUNT(computer.id) FROM computer AS computer LEFT JOIN company AS company ON computer.company_id = company.id WHERE UPPER(computer.name) LIKE UPPER(?) OR UPPER(company.name) LIKE UPPER(?) ";
 	private static String SELECT_DETAILS_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id WHERE computer.id = ?";
-	private static String SELECT_ALL_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id";
-	private static String SELECT_BY_NAME_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id WHERE computer.name = ?";
+	private static String SELECT_ALL_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id LIMIT ? OFFSET ?";
+	private static String SELECT_BY_NAME_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id WHERE UPPER(computer.name) LIKE UPPER(?) OR UPPER(company.name) LIKE UPPER(?) ORDER BY computer.name LIMIT ? OFFSET ?";
 	private static String INSERT_SQL = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private static String UPDATE_SQL = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
 	private static String DELETE_BY_ID_SQL = "DELETE FROM computer WHERE id = ?";
@@ -38,6 +40,22 @@ public class DaoComputer {
 
 	public static DaoComputer getInstance() {
 		return daoComputer;
+	}
+
+	public int count(String name) throws IOException {
+		int count = 0;
+		try (PreparedStatement preparedStatement = connect.prepareStatement(COUNT_SQL)) {
+			preparedStatement.setNString(1, "%" + name + "%");
+			preparedStatement.setNString(2, "%" + name + "%");
+			ResultSet result = preparedStatement.executeQuery();
+			while (result.next()) {
+				count = result.getInt(1);
+			}
+			result.close();
+		} catch (SQLException e) {
+//			logger.error(e.getMessage());
+		}
+		return count;
 	}
 
 	public Computer showDetails(int idComputer) {
@@ -73,11 +91,14 @@ public class DaoComputer {
 		return computer;
 	}
 
-	public ArrayList<Computer> findByName(String name) throws SQLException, PremierePageException {
+	public ArrayList<Computer> findByName(String name, int page, int size) throws SQLException, PremierePageException {
 		ResultSet rs = null;
 		ArrayList<Computer> listComputers = new ArrayList<>();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_BY_NAME_SQL)) {
-			preparedStatement.setString(1, name);
+			preparedStatement.setString(1, "%" + name + "%");
+			preparedStatement.setString(2, "%" + name + "%");
+			preparedStatement.setInt(3, size);
+			preparedStatement.setInt(4, (page - 1) * size);
 			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 
@@ -107,11 +128,13 @@ public class DaoComputer {
 		return listComputers;
 	}
 
-	public ArrayList<Computer> findAll() throws SQLException, PremierePageException {
-
+	public ArrayList<Computer> findAll(int page, int size) throws SQLException, PremierePageException {
+		ResultSet rs = null;
 		ArrayList<Computer> listComputers = new ArrayList<>();
-		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL);
-				ResultSet rs = preparedStatement.executeQuery()) {
+		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL);) {
+			preparedStatement.setInt(3, size);
+			preparedStatement.setInt(4, (page - 1) * size);
+			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 
 				LocalDate introduced, discontinued;
