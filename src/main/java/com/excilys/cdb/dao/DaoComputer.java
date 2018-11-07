@@ -20,7 +20,7 @@ import com.excilys.cdb.model.Computer;
 
 public class DaoComputer {
 
-//	static Logger logger = LoggerFactory.getLogger(DaoComputer.class);
+	static Logger logger = LoggerFactory.getLogger(DaoComputer.class);
 
 	private static String COUNT_SQL = "SELECT COUNT(computer.id) FROM computer AS computer LEFT JOIN company AS company ON computer.company_id = company.id WHERE UPPER(computer.name) LIKE UPPER(?) OR UPPER(company.name) LIKE UPPER(?) ";
 	private static String SELECT_DETAILS_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id WHERE computer.id = ?";
@@ -31,18 +31,20 @@ public class DaoComputer {
 	private static String DELETE_BY_ID_SQL = "DELETE FROM computer WHERE id = ?";
 	private static String DELETE_BY_NAME_SQL = "DELETE FROM computer WHERE name = ?";
 
-	static DaoComputer daoComputer = new DaoComputer();
-	Connection connect;
+	private static DaoComputer daoComputer = new DaoComputer();
+	private static Connection connect;
 
 	private DaoComputer() {
-		connect = ConnexionMySQL.getInstance();
+		ConnexionMySQL.getInstance();
+		connect = ConnexionMySQL.getConnection();
 	}
 
 	public static DaoComputer getInstance() {
 		return daoComputer;
 	}
 
-	public int count(String name) throws IOException {
+	public int count(String name) throws IOException, SQLException {
+		DaoComputer.connect = ConnexionMySQL.connect();
 		int count = 0;
 		try (PreparedStatement preparedStatement = connect.prepareStatement(COUNT_SQL)) {
 			preparedStatement.setNString(1, "%" + name + "%");
@@ -52,13 +54,16 @@ public class DaoComputer {
 				count = result.getInt(1);
 			}
 			result.close();
-		} catch (SQLException e) {
-//			logger.error(e.getMessage());
+		} catch (SQLException sql) {
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} finally {
+			DaoComputer.connect.close();
 		}
 		return count;
 	}
 
-	public Computer showDetails(int idComputer) {
+	public Computer showDetails(int idComputer) throws IOException, SQLException {
+		DaoComputer.connect = ConnexionMySQL.connect();
 		ResultSet rs = null;
 		Computer computer = null;
 		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_DETAILS_SQL)) {
@@ -86,12 +91,16 @@ public class DaoComputer {
 
 			}
 		} catch (SQLException sql) {
-//			logger.error("SQL exception !", sql);
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} finally {
+			DaoComputer.connect.close();
 		}
 		return computer;
 	}
 
-	public ArrayList<Computer> findByName(String name, int page, int size) throws SQLException, PremierePageException {
+	public ArrayList<Computer> findByName(String name, int page, int size)
+			throws SQLException, PremierePageException, IOException {
+		DaoComputer.connect = ConnexionMySQL.connect();
 		ResultSet rs = null;
 		ArrayList<Computer> listComputers = new ArrayList<>();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_BY_NAME_SQL)) {
@@ -123,12 +132,15 @@ public class DaoComputer {
 
 			}
 		} catch (SQLException sql) {
-//			logger.error("SQL exception !", sql);
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} finally {
+			DaoComputer.connect.close();
 		}
 		return listComputers;
 	}
 
-	public ArrayList<Computer> findAll(int page, int size) throws SQLException, PremierePageException {
+	public ArrayList<Computer> findAll(int page, int size) throws SQLException, PremierePageException, IOException {
+		DaoComputer.connect = ConnexionMySQL.connect();
 		ResultSet rs = null;
 		ArrayList<Computer> listComputers = new ArrayList<>();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL);) {
@@ -158,12 +170,15 @@ public class DaoComputer {
 
 			}
 		} catch (SQLException sql) {
-//			logger.error("SQL exception !", sql);
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} finally {
+			DaoComputer.connect.close();
 		}
 		return listComputers;
 	}
 
-	public void create(Computer computer) {
+	public void create(Computer computer) throws IOException, SQLException {
+		DaoComputer.connect = ConnexionMySQL.connect();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(INSERT_SQL)) {
 			preparedStatement.setString(1, computer.getName());
 			if (computer.getIntroducedDate() == null) {
@@ -179,13 +194,16 @@ public class DaoComputer {
 			preparedStatement.setLong(4, computer.getCompany().getId());
 
 			preparedStatement.executeUpdate();
-//			logger.info("Le produit a bien été crée.");
+			logger.info("Le produit a bien été crée.");
 		} catch (SQLException sql) {
-//			logger.error("SQL exception !", sql);
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} finally {
+			DaoComputer.connect.close();
 		}
 	}
 
-	public void update(int idComputer, Computer computer) {
+	public void update(int idComputer, Computer computer) throws IOException, SQLException {
+		DaoComputer.connect = ConnexionMySQL.connect();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(UPDATE_SQL)) {
 			preparedStatement.setString(1, computer.getName());
 			preparedStatement.setDate(2, Date.valueOf(computer.getIntroducedDate()));
@@ -193,30 +211,46 @@ public class DaoComputer {
 			preparedStatement.setLong(4, computer.getCompany().getId());
 			preparedStatement.setInt(5, idComputer);
 			preparedStatement.executeUpdate();
-//			logger.info("Le produit d'id : " + idComputer + " a bien été mis à jour.");
+			logger.info("Le produit d'id : " + idComputer + " a bien été mis à jour.");
 		} catch (SQLException sql) {
-//			logger.error("SQL exception !", sql);
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} finally {
+			DaoComputer.connect.close();
 		}
 	}
 
-	public void deleteById(int idComputer) {
+	public void deleteById(int idComputer) throws IOException, SQLException {
+		DaoComputer.connect = ConnexionMySQL.connect();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(DELETE_BY_ID_SQL)) {
 			preparedStatement.setInt(1, idComputer);
 			preparedStatement.executeUpdate();
-//			logger.info("Le produit d'id : " + idComputer + " a bien été supprimé.");
+			logger.info("Le produit d'id : " + idComputer + " a bien été supprimé.");
 		} catch (SQLException sql) {
-//			logger.error("SQL exception !", sql);
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} finally {
+			DaoComputer.connect.close();
 		}
 	}
 
-	public void deleteByName(String nameComputer) {
+	public void deleteByName(String nameComputer) throws IOException, SQLException {
+		DaoComputer.connect = ConnexionMySQL.connect();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(DELETE_BY_NAME_SQL)) {
 			preparedStatement.setString(1, nameComputer);
 			preparedStatement.executeUpdate();
-//			logger.info("Le produit (" + nameComputer + ") a bien été supprimé.");
+			logger.info("Le produit (" + nameComputer + ") a bien été supprimé.");
 		} catch (SQLException sql) {
-//			logger.error("SQL exception !", sql);
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} finally {
+			DaoComputer.connect.close();
 		}
 	}
+
+//	public void deleteSelection(String[] idTab) throws IOException, NumberFormatException, SQLException {
+//		for (int i = 0; i < idTab.length; i++) {
+//			if (!("".equals(idTab[i]))) {
+//				deleteById(Integer.parseInt(idTab[i]));
+//			}
+//		}
+//	}
 
 }

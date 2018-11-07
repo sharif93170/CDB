@@ -1,10 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.excilys</groupId>
-	<artifactId>CDB</artifactId>
+	<groupId>Computer-database</groupId>
+	<artifactId>Computer-database</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<properties>
 		<mysql.version>8.0.13</mysql.version>
 		<junit.version>4.12</junit.version>
@@ -14,6 +16,8 @@
 		<jstl.version>1.2</jstl.version>
 		<jquery.validation.version>1.17.0-1</jquery.validation.version>
 		<hikariCP.version>3.2.0</hikariCP.version>
+		<javax.transaction.version>1.1</javax.transaction.version>
+		<javax.ejb.version>3.0</javax.ejb.version>
 	</properties>
 	<build>
 		<plugins>
@@ -82,6 +86,17 @@
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<version>${hikariCP.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>${javax.transaction.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.ejb</groupId>
+			<artifactId>ejb-api</artifactId>
+			<version>${javax.ejb.version}</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<reporting>

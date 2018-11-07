@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.omg.Messaging.SyncScopeHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
@@ -19,6 +23,8 @@ import com.excilys.cdb.model.Page;
 import com.excilys.cdb.service.ComputerService;
 
 public class DashboardServlet extends HttpServlet {
+
+	private static final Logger logger = LoggerFactory.getLogger(DashboardServlet.class);
 
 	/**
 	 * 
@@ -55,11 +61,11 @@ public class DashboardServlet extends HttpServlet {
 			}
 
 		} catch (SQLException sql) {
-			sql.printStackTrace();
-		} catch (PremierePageException e) {
-			Page.pagePlus();
-		} catch (DernierePageException e) {
-			Page.pageMinus();
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} catch (PremierePageException ppe) {
+			logger.error("SQL exception : " + ppe.getMessage(), ppe);
+		} catch (DernierePageException dpe) {
+			logger.error("SQL exception : " + dpe.getMessage(), dpe);
 		}
 
 		request.setAttribute("computerTotal", computerTotal);
@@ -68,6 +74,24 @@ public class DashboardServlet extends HttpServlet {
 		request.setAttribute("pageSize", Page.getPageSize());
 
 		this.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
+	}
+
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		computerService = ComputerService.getInstance();
+		System.out.println(request.getParameterValues("selection")[0]);
+		String[] checkedIds = request.getParameterValues("selection");
+		String[] idTab = checkedIds[0].split(",");
+
+		try {
+			computerService.deleteSelection(idTab);
+		} catch (NumberFormatException nfe) {
+			logger.error("SQL exception : " + nfe.getMessage(), nfe);
+		} catch (SQLException sql) {
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		}
+
+		response.sendRedirect("dashboard");
 	}
 
 }

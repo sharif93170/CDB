@@ -9,7 +9,7 @@ $.validator.addMethod("dateValid", function(value, element, params) {
 
 	return isNaN(value) && isNaN($(params).val())
 			|| (Number(value) > Number($(params).val()));
-}, 'The disconinued date must be later than the introduced date.');
+}, 'The discontinued date must be later than the introduced date.');
 
 $(document).ready(function() {
 	$("#addComputer").validate({
@@ -24,6 +24,20 @@ $(document).ready(function() {
 		messages : {
 			computerName : "Required field"
 
+		}
+	});
+
+	$("#editComputer").validate({
+		rules : {
+			computerName : {
+				required : true
+			},
+			discontinued : {
+				dateValid : "#introduced"
+			}
+		},
+		messages : {
+			computerName : "Required field"
 		}
 	});
 

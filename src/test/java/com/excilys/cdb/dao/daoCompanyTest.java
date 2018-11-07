@@ -2,6 +2,7 @@ package com.excilys.cdb.dao;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -40,7 +41,7 @@ public class daoCompanyTest {
 //	}
 
 	@Test
-	public void testFindAllNotNull() {
+	public void testFindAllNotNull() throws IOException {
 		try {
 			Assert.assertNotNull(dc.findAll());
 		} catch (SQLException e) {

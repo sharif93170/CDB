@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Company;
@@ -18,6 +21,8 @@ import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 
 public class AddComputerServlet extends HttpServlet {
+
+	private static final Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
 
 	/**
 	 * 
@@ -64,10 +69,14 @@ public class AddComputerServlet extends HttpServlet {
 //		}
 
 		computerService = ComputerService.getInstance();
-		computerService.create(
-				new Computer.ComputerBuilder(computerName).introduceDate(Date.valueOf(introducedDate).toLocalDate())
-						.discontinuedDate(Date.valueOf(discontinuedDate).toLocalDate())
-						.company(new Company.CompanyBuilder(idCompany).build()).build());
+		try {
+			computerService.create(
+					new Computer.ComputerBuilder(computerName).introduceDate(Date.valueOf(introducedDate).toLocalDate())
+							.discontinuedDate(Date.valueOf(discontinuedDate).toLocalDate())
+							.company(new Company.CompanyBuilder(idCompany).build()).build());
+		} catch (SQLException sql) {
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		}
 
 		response.sendRedirect("dashboard");
 	}

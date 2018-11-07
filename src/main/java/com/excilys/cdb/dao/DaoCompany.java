@@ -1,5 +1,6 @@
 package com.excilys.cdb.dao;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,18 +19,21 @@ public class DaoCompany {
 
 	private static String SELECT_ALL_SQL = "SELECT id, name FROM company";
 
-	static DaoCompany daoCompany = new DaoCompany();
-	Connection connect;
+	private static DaoCompany daoCompany = new DaoCompany();
+	private static Connection connect;
 
 	private DaoCompany() {
-		connect = ConnexionMySQL.getInstance();
+		ConnexionMySQL.getInstance();
+		connect = ConnexionMySQL.getConnection();
 	}
 
 	public static DaoCompany getInstance() {
 		return daoCompany;
 	}
 
-	public ArrayList<Company> findAll() throws SQLException {
+	public ArrayList<Company> findAll() throws SQLException, IOException {
+
+		DaoCompany.connect = ConnexionMySQL.connect();
 
 		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL);
 				ResultSet rs = preparedStatement.executeQuery()) {
@@ -42,8 +46,10 @@ public class DaoCompany {
 			return listCompanies;
 
 		} catch (SQLException sql) {
-			logger.error("SQL exception !", sql);
+			logger.error("SQL exception : " + sql.getMessage(), sql);
 			return null;
+		} finally {
+			DaoCompany.connect.close();
 		}
 
 	}
