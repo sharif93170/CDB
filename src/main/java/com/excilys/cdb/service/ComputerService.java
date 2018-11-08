@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.dao.DaoComputer;
+import com.excilys.cdb.exception.DBException;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Computer;
@@ -46,71 +47,108 @@ public class ComputerService {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public int count(String name) throws IOException {
+	public int count(String name) throws IOException, DBException {
 		int result = 0;
 		try {
 			result = daoComputer.count(name);
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} catch (DBException dbe) {
+			context.setRollbackOnly();
+			throw dbe;
 		}
 		return result;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public Computer showDetails(int idComputer) throws SQLException, IOException {
-		return daoComputer.showDetails(idComputer);
+	public Computer showDetails(int idComputer) throws SQLException, IOException, DBException {
+		Computer computer;
+		try {
+			computer = daoComputer.showDetails(idComputer);
+		} catch (DBException dbe) {
+			context.setRollbackOnly();
+			throw dbe;
+		}
+		return computer;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public <T> List<Computer> findAll() throws SQLException, PremierePageException, DernierePageException, IOException {
+	public <T> List<Computer> findAll()
+			throws SQLException, PremierePageException, DernierePageException, IOException, DBException {
 		List<Computer> list;
-		PageValidator.previousPageValidator();
-		list = daoComputer.findAll(Page.getPage(), Page.getPageSize());
-		PageValidator.nextPageValidator(list);
+		try {
+			PageValidator.previousPageValidator();
+			list = daoComputer.findAll(Page.getPage(), Page.getPageSize());
+			PageValidator.nextPageValidator(list);
+		} catch (DBException dbe) {
+			context.setRollbackOnly();
+			throw dbe;
+		}
 		return list;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public <T> List<Computer> findAll(String name)
-			throws SQLException, PremierePageException, DernierePageException, IOException {
+			throws SQLException, PremierePageException, DernierePageException, IOException, DBException {
 		List<Computer> list;
-		PageValidator.previousPageValidator();
-		list = daoComputer.findByName(name, Page.getPage(), Page.getPageSize());
-		PageValidator.nextPageValidator(list);
+		try {
+			PageValidator.previousPageValidator();
+			list = daoComputer.findByName(name, Page.getPage(), Page.getPageSize());
+			PageValidator.nextPageValidator(list);
+		} catch (DBException dbe) {
+			context.setRollbackOnly();
+			throw dbe;
+		}
 		return list;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void create(Computer computer) throws IOException, SQLException {
-		daoComputer.create(computer);
+	public void create(Computer computer) throws IOException, SQLException, DBException {
+		try {
+			daoComputer.create(computer);
+		} catch (DBException dbe) {
+			context.setRollbackOnly();
+			throw dbe;
+		}
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void update(int id, Computer computer) throws IOException, SQLException {
-		daoComputer.update(id, computer);
+	public void update(int id, Computer computer) throws IOException, SQLException, DBException {
+		try {
+			daoComputer.update(id, computer);
+		} catch (DBException dbe) {
+			context.setRollbackOnly();
+			throw dbe;
+		}
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void deleteByName(String nameToDelete) throws IOException, SQLException {
-		daoComputer.deleteByName(nameToDelete);
+	public void deleteByName(String nameToDelete) throws IOException, SQLException, DBException {
+		try {
+			daoComputer.deleteByName(nameToDelete);
+		} catch (DBException dbe) {
+			context.setRollbackOnly();
+			throw dbe;
+		}
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void deleteById(int idToDelete) throws IOException, SQLException {
-		daoComputer.deleteById(idToDelete);
+	public void deleteById(int idToDelete) throws IOException, SQLException, DBException {
+		try {
+			daoComputer.deleteById(idToDelete);
+		} catch (DBException dbe) {
+			context.setRollbackOnly();
+			throw dbe;
+		}
 	}
 
-//	public void deleteSelection(String[] idTab) throws NumberFormatException, IOException, SQLException {
-//		daoComputer.deleteSelection(idTab);
-//	}
-
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void deleteSelection(String[] idTab) throws IOException, NumberFormatException, SQLException {
-		for (int i = 0; i < idTab.length; i++) { 
-			if (!("".equals(idTab[i]))) {
-				System.out.println(idTab[i]);
-				daoComputer.deleteById(Integer.parseInt(idTab[i]));
-			}
+	public void deleteSelection(String[] idTab) throws NumberFormatException, IOException, SQLException, DBException {
+		try {
+			daoComputer.deleteSelection(idTab);
+		} catch (DBException dbe) {
+			context.setRollbackOnly();
+			throw dbe;
 		}
 	}
 

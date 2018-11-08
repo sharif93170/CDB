@@ -11,6 +11,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.excilys.cdb.exception.DBException;
 import com.excilys.cdb.model.Company;
 
 public class daoCompanyTest {
@@ -41,7 +42,7 @@ public class daoCompanyTest {
 //	}
 
 	@Test
-	public void testFindAllNotNull() throws IOException {
+	public void testFindAllNotNull() throws IOException, DBException {
 		try {
 			Assert.assertNotNull(dc.findAll());
 		} catch (SQLException e) {

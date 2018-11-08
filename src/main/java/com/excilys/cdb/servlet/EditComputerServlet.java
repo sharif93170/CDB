@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.dto.ComputerDTO;
+import com.excilys.cdb.exception.DBException;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.mapper.ComputerDtoMapper;
@@ -57,6 +58,8 @@ public class EditComputerServlet extends HttpServlet {
 			logger.error("SQL exception : " + ppe.getMessage(), ppe);
 		} catch (DernierePageException dpe) {
 			logger.error("SQL exception : " + dpe.getMessage(), dpe);
+		} catch (DBException dbe) {
+			this.getServletContext().getRequestDispatcher("/WEB-INF/views/500.jsp").forward(request, response);
 		}
 
 		this.getServletContext().getRequestDispatcher("/WEB-INF/views/editComputer.jsp").forward(request, response);
@@ -79,6 +82,8 @@ public class EditComputerServlet extends HttpServlet {
 			logger.error("Number format exception : " + nfe.getMessage(), nfe);
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} catch (DBException e) {
+			this.getServletContext().getRequestDispatcher("/WEB-INF/views/500.jsp").forward(request, response);
 		}
 
 		response.sendRedirect("dashboard");

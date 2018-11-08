@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.cdb.exception.DBException;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Company;
@@ -40,11 +41,12 @@ public class AddComputerServlet extends HttpServlet {
 			request.setAttribute("companies", listCompany);
 		} catch (SQLException sql) {
 			sql.printStackTrace();
-			;
 		} catch (PremierePageException pp) {
 			pp.printStackTrace();
 		} catch (DernierePageException dp) {
 			dp.printStackTrace();
+		} catch (DBException dbe) {
+			this.getServletContext().getRequestDispatcher("/WEB-INF/views/500.jsp").forward(request, response);
 		}
 		this.getServletContext().getRequestDispatcher("/WEB-INF/views/addComputer.jsp").forward(request, response);
 	}
@@ -76,6 +78,8 @@ public class AddComputerServlet extends HttpServlet {
 							.company(new Company.CompanyBuilder(idCompany).build()).build());
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} catch (DBException dbe) {
+			this.getServletContext().getRequestDispatcher("/WEB-INF/views/500.jsp").forward(request, response);
 		}
 
 		response.sendRedirect("dashboard");

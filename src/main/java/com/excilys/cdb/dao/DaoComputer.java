@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Date;
 
+import com.excilys.cdb.exception.DBException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.jdbc.ConnexionMySQL;
 import com.excilys.cdb.model.Company;
@@ -22,14 +23,15 @@ public class DaoComputer {
 
 	static Logger logger = LoggerFactory.getLogger(DaoComputer.class);
 
-	private static String COUNT_SQL = "SELECT COUNT(computer.id) FROM computer AS computer LEFT JOIN company AS company ON computer.company_id = company.id WHERE UPPER(computer.name) LIKE UPPER(?) OR UPPER(company.name) LIKE UPPER(?) ";
-	private static String SELECT_DETAILS_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id WHERE computer.id = ?";
-	private static String SELECT_ALL_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id LIMIT ? OFFSET ?";
-	private static String SELECT_BY_NAME_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id WHERE UPPER(computer.name) LIKE UPPER(?) OR UPPER(company.name) LIKE UPPER(?) ORDER BY computer.name LIMIT ? OFFSET ?";
-	private static String INSERT_SQL = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
-	private static String UPDATE_SQL = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
-	private static String DELETE_BY_ID_SQL = "DELETE FROM computer WHERE id = ?";
-	private static String DELETE_BY_NAME_SQL = "DELETE FROM computer WHERE name = ?";
+	private final static String COUNT_SQL = "SELECT COUNT(computer.id) FROM computer AS computer LEFT JOIN company AS company ON computer.company_id = company.id WHERE UPPER(computer.name) LIKE UPPER(?) OR UPPER(company.name) LIKE UPPER(?) ";
+	private final static String SELECT_DETAILS_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id WHERE computer.id = ?";
+	private final static String SELECT_ALL_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id LIMIT ? OFFSET ?";
+	private final static String SELECT_BY_NAME_SQL = "SELECT computer.id, computer.name, computer.introduced, computer.discontinued, computer.company_id, company.id, company.name FROM computer computer LEFT JOIN company company ON computer.company_id = company.id WHERE UPPER(computer.name) LIKE UPPER(?) OR UPPER(company.name) LIKE UPPER(?) ORDER BY computer.name LIMIT ? OFFSET ?";
+	private final static String INSERT_SQL = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
+	private final static String UPDATE_SQL = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
+	private final static String DELETE_BY_ID_SQL = "DELETE FROM computer WHERE id = ?";
+	private final static String DELETE_BY_COMPANY_ID_SQL = "DELETE FROM computer WHERE company_id = ?";
+	private final static String DELETE_BY_NAME_SQL = "DELETE FROM computer WHERE name = ?";
 
 	private static DaoComputer daoComputer = new DaoComputer();
 	private static Connection connect;
@@ -43,7 +45,7 @@ public class DaoComputer {
 		return daoComputer;
 	}
 
-	public int count(String name) throws IOException, SQLException {
+	public int count(String name) throws IOException, SQLException, DBException {
 		DaoComputer.connect = ConnexionMySQL.connect();
 		int count = 0;
 		try (PreparedStatement preparedStatement = connect.prepareStatement(COUNT_SQL)) {
@@ -57,12 +59,17 @@ public class DaoComputer {
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
 		} finally {
-			DaoComputer.connect.close();
+			try {
+				DaoComputer.connect.close();
+			} catch (SQLException sql) {
+				logger.error(sql.getMessage());
+				throw new DBException("La fermeture de la connexion à la base a echoué");
+			}
 		}
 		return count;
 	}
 
-	public Computer showDetails(int idComputer) throws IOException, SQLException {
+	public Computer showDetails(int idComputer) throws IOException, SQLException, DBException {
 		DaoComputer.connect = ConnexionMySQL.connect();
 		ResultSet rs = null;
 		Computer computer = null;
@@ -93,13 +100,18 @@ public class DaoComputer {
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
 		} finally {
-			DaoComputer.connect.close();
+			try {
+				DaoComputer.connect.close();
+			} catch (SQLException sql) {
+				logger.error(sql.getMessage());
+				throw new DBException("La fermeture de la connexion à la base a echoué");
+			}
 		}
 		return computer;
 	}
 
 	public ArrayList<Computer> findByName(String name, int page, int size)
-			throws SQLException, PremierePageException, IOException {
+			throws SQLException, PremierePageException, IOException, DBException {
 		DaoComputer.connect = ConnexionMySQL.connect();
 		ResultSet rs = null;
 		ArrayList<Computer> listComputers = new ArrayList<>();
@@ -134,18 +146,24 @@ public class DaoComputer {
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
 		} finally {
-			DaoComputer.connect.close();
+			try {
+				DaoComputer.connect.close();
+			} catch (SQLException sql) {
+				logger.error(sql.getMessage());
+				throw new DBException("La fermeture de la connexion à la base a echoué");
+			}
 		}
 		return listComputers;
 	}
 
-	public ArrayList<Computer> findAll(int page, int size) throws SQLException, PremierePageException, IOException {
+	public ArrayList<Computer> findAll(int page, int size)
+			throws SQLException, PremierePageException, IOException, DBException {
 		DaoComputer.connect = ConnexionMySQL.connect();
 		ResultSet rs = null;
 		ArrayList<Computer> listComputers = new ArrayList<>();
-		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL);) {
-			preparedStatement.setInt(3, size);
-			preparedStatement.setInt(4, (page - 1) * size);
+		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL)) {
+			preparedStatement.setInt(1, size);
+			preparedStatement.setInt(2, (page - 1) * size);
 			rs = preparedStatement.executeQuery();
 			while (rs.next()) {
 
@@ -172,12 +190,17 @@ public class DaoComputer {
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
 		} finally {
-			DaoComputer.connect.close();
+			try {
+				DaoComputer.connect.close();
+			} catch (SQLException sql) {
+				logger.error(sql.getMessage());
+				throw new DBException("La fermeture de la connexion à la base a echoué");
+			}
 		}
 		return listComputers;
 	}
 
-	public void create(Computer computer) throws IOException, SQLException {
+	public void create(Computer computer) throws IOException, SQLException, DBException {
 		DaoComputer.connect = ConnexionMySQL.connect();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(INSERT_SQL)) {
 			preparedStatement.setString(1, computer.getName());
@@ -198,11 +221,16 @@ public class DaoComputer {
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
 		} finally {
-			DaoComputer.connect.close();
+			try {
+				DaoComputer.connect.close();
+			} catch (SQLException sql) {
+				logger.error(sql.getMessage());
+				throw new DBException("La fermeture de la connexion à la base a echoué");
+			}
 		}
 	}
 
-	public void update(int idComputer, Computer computer) throws IOException, SQLException {
+	public void update(int idComputer, Computer computer) throws IOException, SQLException, DBException {
 		DaoComputer.connect = ConnexionMySQL.connect();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(UPDATE_SQL)) {
 			preparedStatement.setString(1, computer.getName());
@@ -215,11 +243,16 @@ public class DaoComputer {
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
 		} finally {
-			DaoComputer.connect.close();
+			try {
+				DaoComputer.connect.close();
+			} catch (SQLException sql) {
+				logger.error(sql.getMessage());
+				throw new DBException("La fermeture de la connexion à la base a echoué");
+			}
 		}
 	}
 
-	public void deleteById(int idComputer) throws IOException, SQLException {
+	public void deleteById(int idComputer) throws IOException, SQLException, DBException {
 		DaoComputer.connect = ConnexionMySQL.connect();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(DELETE_BY_ID_SQL)) {
 			preparedStatement.setInt(1, idComputer);
@@ -228,11 +261,16 @@ public class DaoComputer {
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
 		} finally {
-			DaoComputer.connect.close();
+			try {
+				DaoComputer.connect.close();
+			} catch (SQLException sql) {
+				logger.error(sql.getMessage());
+				throw new DBException("La fermeture de la connexion à la base a echoué");
+			}
 		}
 	}
 
-	public void deleteByName(String nameComputer) throws IOException, SQLException {
+	public void deleteByName(String nameComputer) throws IOException, SQLException, DBException {
 		DaoComputer.connect = ConnexionMySQL.connect();
 		try (PreparedStatement preparedStatement = connect.prepareStatement(DELETE_BY_NAME_SQL)) {
 			preparedStatement.setString(1, nameComputer);
@@ -241,16 +279,39 @@ public class DaoComputer {
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
 		} finally {
-			DaoComputer.connect.close();
+			try {
+				DaoComputer.connect.close();
+			} catch (SQLException sql) {
+				logger.error(sql.getMessage());
+				throw new DBException("La fermeture de la connexion à la base a echoué");
+			}
 		}
 	}
 
-//	public void deleteSelection(String[] idTab) throws IOException, NumberFormatException, SQLException {
-//		for (int i = 0; i < idTab.length; i++) {
-//			if (!("".equals(idTab[i]))) {
-//				deleteById(Integer.parseInt(idTab[i]));
-//			}
-//		}
-//	}
+	public void deleteByCompanyId(int idCompany) throws IOException, SQLException, DBException {
+		DaoComputer.connect = ConnexionMySQL.connect();
+		try (PreparedStatement preparedStatement = connect.prepareStatement(DELETE_BY_COMPANY_ID_SQL)) {
+			preparedStatement.setInt(1, idCompany);
+			preparedStatement.executeUpdate();
+			logger.info("Le(s) produit(s) d'idCompany : " + idCompany + " a(ont) bien été(s) supprimé(s).");
+		} catch (SQLException sql) {
+			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} finally {
+			try {
+				DaoComputer.connect.close();
+			} catch (SQLException sql) {
+				logger.error(sql.getMessage());
+				throw new DBException("La fermeture de la connexion à la base a echoué");
+			}
+		}
+	}
+
+	public void deleteSelection(String[] idTab) throws IOException, NumberFormatException, SQLException, DBException {
+		for (int i = 0; i < idTab.length; i++) {
+			if (!("".equals(idTab[i]))) {
+				deleteById(Integer.parseInt(idTab[i]));
+			}
+		}
+	}
 
 }

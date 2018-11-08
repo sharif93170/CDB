@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb.dto.ComputerDTO;
+import com.excilys.cdb.exception.DBException;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.mapper.ComputerDtoMapper;
@@ -66,6 +67,8 @@ public class DashboardServlet extends HttpServlet {
 			logger.error("SQL exception : " + ppe.getMessage(), ppe);
 		} catch (DernierePageException dpe) {
 			logger.error("SQL exception : " + dpe.getMessage(), dpe);
+		} catch (DBException e) {
+			this.getServletContext().getRequestDispatcher("/WEB-INF/views/500.jsp").forward(request, response);
 		}
 
 		request.setAttribute("computerTotal", computerTotal);
@@ -79,7 +82,6 @@ public class DashboardServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		computerService = ComputerService.getInstance();
-		System.out.println(request.getParameterValues("selection")[0]);
 		String[] checkedIds = request.getParameterValues("selection");
 		String[] idTab = checkedIds[0].split(",");
 
@@ -89,6 +91,8 @@ public class DashboardServlet extends HttpServlet {
 			logger.error("SQL exception : " + nfe.getMessage(), nfe);
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} catch (DBException dbe) {
+			this.getServletContext().getRequestDispatcher("/WEB-INF/views/500.jsp").forward(request, response);
 		}
 
 		response.sendRedirect("dashboard");
