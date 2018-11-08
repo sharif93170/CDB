@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -19,6 +20,7 @@ import com.excilys.cdb.jdbc.ConnexionMySQL;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 
+@Repository
 public class DaoComputer {
 
 	static Logger logger = LoggerFactory.getLogger(DaoComputer.class);

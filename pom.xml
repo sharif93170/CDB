@@ -18,6 +18,7 @@
 		<hikariCP.version>3.2.0</hikariCP.version>
 		<javax.transaction.version>1.1</javax.transaction.version>
 		<javax.ejb.version>3.0</javax.ejb.version>
+		<spring.version>5.1.2.RELEASE</spring.version>
 	</properties>
 	<build>
 		<plugins>
@@ -98,6 +99,23 @@
 			<version>${javax.ejb.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+
 	</dependencies>
 	<reporting>
 		<plugins>
