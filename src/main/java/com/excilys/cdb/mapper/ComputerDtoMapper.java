@@ -17,7 +17,7 @@ public class ComputerDtoMapper {
 		return computerDtoMapper;
 	}
 
-	public Computer toComputer(ComputerDTO computerDto) {
+	public Computer fromComputerDTO(ComputerDTO computerDto) {
 
 		String computerName = computerDto.getName();
 		Long computerId = null;
@@ -42,7 +42,7 @@ public class ComputerDtoMapper {
 
 	}
 
-	public ComputerDTO fromComputer(Computer computer) {
+	public ComputerDTO toComputerDTO(Computer computer) {
 
 		ComputerDTO computerDto = new ComputerDTO();
 

@@ -38,11 +38,12 @@ public class DaoCompany {
 	public ArrayList<Company> findAll() throws SQLException, IOException, DBException {
 
 		DaoCompany.connect = ConnexionMySQL.connect();
+		ArrayList<Company> listCompanies = new ArrayList<>();
+		;
 
 		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL);
 				ResultSet rs = preparedStatement.executeQuery()) {
 
-			ArrayList<Company> listCompanies = new ArrayList<>();
 			while (rs.next()) {
 				listCompanies.add(new Company.CompanyBuilder(rs.getLong("id")).name(rs.getString("name")).build());
 			}
@@ -51,7 +52,7 @@ public class DaoCompany {
 
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
-			return null;
+			return listCompanies;
 		} finally {
 			try {
 				DaoCompany.connect.close();

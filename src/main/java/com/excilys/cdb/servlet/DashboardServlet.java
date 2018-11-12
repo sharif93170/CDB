@@ -58,7 +58,7 @@ public class DashboardServlet extends HttpServlet {
 			}
 			computerPageDTO.clear();
 			for (int i = 0; i < computer.size(); i++) {
-				computerPageDTO.add(mapper.fromComputer(computer.get(i)));
+				computerPageDTO.add(mapper.toComputerDTO(computer.get(i)));
 			}
 
 		} catch (SQLException sql) {

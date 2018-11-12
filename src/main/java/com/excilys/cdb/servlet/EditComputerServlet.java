@@ -41,7 +41,7 @@ public class EditComputerServlet extends HttpServlet {
 			mapper = ComputerDtoMapper.getInstance();
 
 			ComputerDTO computerDto = mapper
-					.fromComputer(computerService.showDetails(Integer.parseInt(request.getParameter("id"))));
+					.toComputerDTO(computerService.showDetails(Integer.parseInt(request.getParameter("id"))));
 
 			request.setAttribute("computerId", computerDto.getId());
 			request.setAttribute("computerName", computerDto.getName());
@@ -77,7 +77,7 @@ public class EditComputerServlet extends HttpServlet {
 		computerService = ComputerService.getInstance();
 
 		try {
-			computerService.update(Integer.parseInt(request.getParameter("id")), mapper.toComputer(computerDto));
+			computerService.update(Integer.parseInt(request.getParameter("id")), mapper.fromComputerDTO(computerDto));
 		} catch (NumberFormatException nfe) {
 			logger.error("Number format exception : " + nfe.getMessage(), nfe);
 		} catch (SQLException sql) {

@@ -47,7 +47,6 @@ public class CompanyService {
 		return companyService;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public <T> List<Company> findAll()
 			throws SQLException, PremierePageException, DernierePageException, IOException, DBException {
 		List<Company> list;
