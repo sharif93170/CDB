@@ -18,15 +18,15 @@ public class daoComputerTest {
 
 	private DaoComputer dc;
 
-	@Before
-	public void setUp() {
-		dc = DaoComputer.getInstance();
-	}
-
-	@After
-	public void tearDown() {
-		dc = null;
-	}
+//	@Before
+//	public void setUp() {
+//		dc = DaoComputer.getInstance();
+//	}
+//
+//	@After
+//	public void tearDown() {
+//		dc = null;
+//	}
 
 	@Test
 	public void testShowDetails() {

@@ -1,18 +1,23 @@
 package com.excilys.cdb.dao;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb.exception.DBException;
-import com.excilys.cdb.jdbc.ConnexionMySQL;
 import com.excilys.cdb.model.Company;
 
 @Repository
@@ -21,67 +26,31 @@ public class DaoCompany {
 	private static final Logger logger = LoggerFactory.getLogger(DaoCompany.class);
 
 	private final static String SELECT_ALL_SQL = "SELECT id, name FROM company";
-	private final static String DELETE_COMPANY_BY_ID_SQL = "DELETE FROM company WHERE id= ?";
+	private final static String DELETE_COMPANY_BY_ID_SQL = "DELETE FROM company WHERE id= :id";
 
-	private static DaoCompany daoCompany = new DaoCompany();
-	private static Connection connect;
+	@Autowired
+	DataSource dataSource;
 
-	private DaoCompany() {
-		ConnexionMySQL.getInstance();
-		connect = ConnexionMySQL.getConnection();
-	}
+	public List<Company> findAll() throws SQLException, IOException, DBException {
+		List<Company> listCompanies = new ArrayList<>();
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-	public static DaoCompany getInstance() {
-		return daoCompany;
-	}
-
-	public ArrayList<Company> findAll() throws SQLException, IOException, DBException {
-
-		DaoCompany.connect = ConnexionMySQL.connect();
-		ArrayList<Company> listCompanies = new ArrayList<>();
-		;
-
-		try (PreparedStatement preparedStatement = connect.prepareStatement(SELECT_ALL_SQL);
-				ResultSet rs = preparedStatement.executeQuery()) {
-
-			while (rs.next()) {
-				listCompanies.add(new Company.CompanyBuilder(rs.getLong("id")).name(rs.getString("name")).build());
+		RowMapper<Company> rowMapper = new RowMapper<Company>() {
+			public Company mapRow(ResultSet rs, int pRowNum) throws SQLException {
+				Company company = new Company.CompanyBuilder(rs.getLong("id")).name(rs.getString("name")).build();
+				return company;
 			}
+		};
 
-			return listCompanies;
-
-		} catch (SQLException sql) {
-			logger.error("SQL exception : " + sql.getMessage(), sql);
-			return listCompanies;
-		} finally {
-			try {
-				DaoCompany.connect.close();
-			} catch (SQLException sql) {
-				logger.error(sql.getMessage());
-				throw new DBException("La fermeture de la connexion à la base a echoué");
-			}
-		}
-
+		listCompanies = jdbcTemplate.query(SELECT_ALL_SQL, rowMapper);
+		return listCompanies;
 	}
 
 	public void delete(int idCompany) throws IOException, DBException {
-
-		DaoCompany.connect = ConnexionMySQL.connect();
-
-		try (PreparedStatement preparedStatement = DaoCompany.connect.prepareStatement(DELETE_COMPANY_BY_ID_SQL)) {
-			preparedStatement.setInt(1, idCompany);
-			preparedStatement.executeUpdate();
-
-		} catch (SQLException sql) {
-			logger.error(sql.getMessage());
-		} finally {
-			try {
-				DaoCompany.connect.close();
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-				throw new DBException("La fermeture de la connexion à la base a echoué");
-			}
-		}
+		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("id", idCompany);
+		jdbcTemplate.update(DELETE_COMPANY_BY_ID_SQL, params);
 	}
 
 }

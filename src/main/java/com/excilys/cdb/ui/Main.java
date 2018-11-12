@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.cdb.exception.DBException;
 import com.excilys.cdb.exception.DernierePageException;
@@ -22,14 +23,17 @@ public class Main {
 
 	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
+	@Autowired
+	static ComputerService computerService;
+	@Autowired
+	static CompanyService companyService;
+
 	public static void main(String[] args)
 			throws SQLException, PremierePageException, DernierePageException, IOException, DBException {
 
 		System.out.println("##### Bienvenue sur Computer Database #####");
 		int choix;
 		boolean continuer = true;
-		ComputerService computerService;
-		CompanyService companyService;
 
 		while (continuer) {
 			System.out.println("\n##### Menu - Saisissez votre choix : #####");
@@ -51,7 +55,6 @@ public class Main {
 			switch (choix) {
 
 			case 1: // Lister tous les Computers
-				computerService = ComputerService.getInstance();
 				System.out.println("Liste de tous les Computers : ");
 				boolean continuer2 = true;
 				while (continuer2) {
@@ -86,7 +89,6 @@ public class Main {
 				break;
 
 			case 2: // Lister toutes les Companies
-				companyService = CompanyService.getInstance();
 				System.out.println("Liste de toute les Companies : ");
 				boolean continuer3 = true;
 				while (continuer3) {
@@ -122,7 +124,6 @@ public class Main {
 				break;
 
 			case 3: // Afficher les détails d'un Computer
-				computerService = ComputerService.getInstance();
 				System.out.println("Veuillez saisir l'id du produit pour afficher ses détails : ");
 				System.out.println("Détails d'un Computer : ");
 				int idComputer = sc.nextInt();
@@ -134,8 +135,6 @@ public class Main {
 				break;
 
 			case 4: // Créer un nouveau Computer
-				computerService = ComputerService.getInstance();
-
 				System.out.println("Ajout d'un Computer :");
 
 				String createName;
@@ -167,7 +166,7 @@ public class Main {
 				System.out.println("Veuillez saisir le mois d'arret : ");
 				createMonth = sc.nextInt();
 
-				System.out.println("Veuillez saisir l'annÃ©e d'arret : ");
+				System.out.println("Veuillez saisir l'année d'arret : ");
 				createYear = sc.nextInt();
 
 				createDiscontinued = LocalDate.of(createYear, createMonth, createDay);
@@ -181,7 +180,6 @@ public class Main {
 				break;
 
 			case 5: // Modifier un Computer
-				computerService = ComputerService.getInstance();
 				System.out.println("Modification d'un Computer : ");
 				int updateId;
 				String updateName;
@@ -232,7 +230,6 @@ public class Main {
 				break;
 
 			case 6: // Supprimer un Computer par id
-				computerService = ComputerService.getInstance();
 				System.out.println("Suppression d'un Computer par id : ");
 
 				int idToDelete;
@@ -245,7 +242,6 @@ public class Main {
 				break;
 
 			case 7: // Supprimer un Computer par nom
-				computerService = ComputerService.getInstance();
 				System.out.println("Suppression d'un Computer par nom : ");
 
 				String nameToDelete;
@@ -257,7 +253,6 @@ public class Main {
 				break;
 
 			case 8: // Supprimer une Company et les Computers assosiés
-				companyService = CompanyService.getInstance();
 				int idCompanyToDelete;
 				System.out.println("Veuillez saisir la Company à supprimer: ");
 				idCompanyToDelete = sc.nextInt();

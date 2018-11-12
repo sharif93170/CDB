@@ -18,16 +18,16 @@ public class daoCompanyTest {
 
 	private DaoCompany dc;
 
-	@Before
-	public void setUp() {
-		dc = DaoCompany.getInstance();
-	}
-
-	@After
-	public void tearDown() {
-		dc = null;
-	}
-
+//	@Before
+//	public void setUp() {
+//		dc = DaoCompany.getInstance();
+//	}
+//
+//	@After
+//	public void tearDown() {
+//		dc = null;
+//	}
+//
 //	@Test
 //	public void testFindAllEquals() {
 //		try {

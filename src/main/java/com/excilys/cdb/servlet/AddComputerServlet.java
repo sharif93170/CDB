@@ -6,12 +6,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.cdb.exception.DBException;
 import com.excilys.cdb.exception.DernierePageException;
@@ -21,6 +23,7 @@ import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 
+@WebServlet("/addComputer")
 public class AddComputerServlet extends HttpServlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
@@ -29,22 +32,24 @@ public class AddComputerServlet extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 3920808878587122754L;
+
+	@Autowired
 	ComputerService computerService;
+	@Autowired
 	CompanyService companyService;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		companyService = CompanyService.getInstance();
 		try {
 			List<Company> listCompany = companyService.findAll();
 			request.setAttribute("companies", listCompany);
 		} catch (SQLException sql) {
-			sql.printStackTrace();
-		} catch (PremierePageException pp) {
-			pp.printStackTrace();
-		} catch (DernierePageException dp) {
-			dp.printStackTrace();
+			logger.error(sql.getMessage());
+		} catch (PremierePageException ppe) {
+			logger.error(ppe.getMessage());
+		} catch (DernierePageException dpe) {
+			logger.error(dpe.getMessage());
 		} catch (DBException dbe) {
 			this.getServletContext().getRequestDispatcher("/WEB-INF/views/500.jsp").forward(request, response);
 		}
@@ -70,7 +75,6 @@ public class AddComputerServlet extends HttpServlet {
 //			computer.setDiscontinuedDate(null);
 //		}
 
-		computerService = ComputerService.getInstance();
 		try {
 			computerService.create(
 					new Computer.ComputerBuilder(computerName).introduceDate(Date.valueOf(introducedDate).toLocalDate())

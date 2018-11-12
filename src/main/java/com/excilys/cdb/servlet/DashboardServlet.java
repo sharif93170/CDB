@@ -6,13 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.omg.Messaging.SyncScopeHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.exception.DBException;
@@ -23,6 +26,7 @@ import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.service.ComputerService;
 
+@WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(DashboardServlet.class);
@@ -32,7 +36,9 @@ public class DashboardServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 7682625742899332286L;
 
+	@Autowired
 	ComputerService computerService;
+
 	ComputerDtoMapper mapper;
 	List<Computer> computer;
 	List<Computer> computerPage = new ArrayList<Computer>();
@@ -42,8 +48,9 @@ public class DashboardServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+		ctx.getAutowireCapableBeanFactory().autowireBean(this);
 		try {
-			computerService = ComputerService.getInstance();
 			mapper = ComputerDtoMapper.getInstance();
 
 			Page.setPage(request.getParameter("page"), request.getParameter("size"));
@@ -81,7 +88,6 @@ public class DashboardServlet extends HttpServlet {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		computerService = ComputerService.getInstance();
 		String[] checkedIds = request.getParameterValues("selection");
 		String[] idTab = checkedIds[0].split(",");
 

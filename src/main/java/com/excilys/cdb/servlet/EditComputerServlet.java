@@ -5,12 +5,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.exception.DBException;
@@ -21,6 +23,7 @@ import com.excilys.cdb.model.Company;
 import com.excilys.cdb.service.CompanyService;
 import com.excilys.cdb.service.ComputerService;
 
+@WebServlet("/editComputer")
 public class EditComputerServlet extends HttpServlet {
 
 	private static final Logger logger = LoggerFactory.getLogger(EditComputerServlet.class);
@@ -30,14 +33,15 @@ public class EditComputerServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 2713830462205183398L;
 
+	@Autowired
 	CompanyService companyService;
+	@Autowired
 	ComputerService computerService;
+
 	ComputerDtoMapper mapper;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			companyService = CompanyService.getInstance();
-			computerService = ComputerService.getInstance();
 			mapper = ComputerDtoMapper.getInstance();
 
 			ComputerDTO computerDto = mapper
@@ -73,8 +77,6 @@ public class EditComputerServlet extends HttpServlet {
 		computerDto.setIntroduced(request.getParameter("introduced"));
 		computerDto.setDiscontinued(request.getParameter("discontinued"));
 		computerDto.setCompanyId(request.getParameter("companyId"));
-
-		computerService = ComputerService.getInstance();
 
 		try {
 			computerService.update(Integer.parseInt(request.getParameter("id")), mapper.fromComputerDTO(computerDto));

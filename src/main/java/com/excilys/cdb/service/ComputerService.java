@@ -4,16 +4,14 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.excilys.cdb.dao.DaoComputer;
 import com.excilys.cdb.exception.DBException;
@@ -23,28 +21,15 @@ import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Page;
 import com.excilys.cdb.validator.PageValidator;
 
-@Stateless
-@TransactionManagement(TransactionManagementType.CONTAINER)
+@Service
 public class ComputerService {
 
 	static Logger logger = LoggerFactory.getLogger(ComputerService.class);
 
-	private static ComputerService computerService = null;
-	DaoComputer daoComputer;
-
-	@Resource
-	private SessionContext context;
-
-	private ComputerService() {
-		daoComputer = DaoComputer.getInstance();
-	}
-
-	public static ComputerService getInstance() {
-		if (computerService == null) {
-			computerService = new ComputerService();
-		}
-		return computerService;
-	}
+	@Autowired
+	private DaoComputer daoComputer;
+	@Autowired
+	private PlatformTransactionManager transactionManager;
 
 	public int count(String name) throws IOException, DBException, SQLException {
 		return daoComputer.count(name);
@@ -88,14 +73,18 @@ public class ComputerService {
 		daoComputer.deleteById(idToDelete);
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void deleteSelection(String[] idTab) throws NumberFormatException, IOException, SQLException, DBException {
-		try {
-			daoComputer.deleteSelection(idTab);
-		} catch (DBException dbe) {
-			context.setRollbackOnly();
-			throw dbe;
-		}
+		TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+			@Override
+			protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+				try {
+					daoComputer.deleteSelection(idTab);
+				} catch (NumberFormatException | IOException | SQLException | DBException e) {
+					logger.error(e.getMessage());
+				}
+			}
+		});
 	}
 
 }
