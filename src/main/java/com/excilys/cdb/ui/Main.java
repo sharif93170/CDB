@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.excilys.cdb.exception.DBException;
+import com.excilys.cdb.exception.DataException;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Company;
@@ -29,7 +30,7 @@ public class Main {
 	static CompanyService companyService;
 
 	public static void main(String[] args)
-			throws SQLException, PremierePageException, DernierePageException, IOException, DBException {
+			throws SQLException, PremierePageException, DernierePageException, IOException, DBException, DataException {
 
 		System.out.println("##### Bienvenue sur Computer Database #####");
 		int choix;

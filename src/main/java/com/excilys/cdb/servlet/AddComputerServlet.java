@@ -18,6 +18,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.excilys.cdb.exception.DBException;
+import com.excilys.cdb.exception.DataException;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Company;
@@ -72,17 +73,6 @@ public class AddComputerServlet extends HttpServlet {
 		String discontinuedDate = request.getParameter("discontinued");
 		Long idCompany = Long.parseLong(request.getParameter("companyId"));
 
-//		if (!introducedDate.equals("")) {
-//			computer.setIntroducedDate(Date.valueOf(introducedDate).toLocalDate());
-//		} else {
-//			computer.setIntroducedDate(null);
-//		}
-//		if (!discontinuedDate.equals("")) {
-//			computer.setDiscontinuedDate(Date.valueOf(discontinuedDate).toLocalDate());
-//		} else {
-//			computer.setDiscontinuedDate(null);
-//		}
-
 		try {
 			computerService.create(
 					new Computer.ComputerBuilder(computerName).introduceDate(Date.valueOf(introducedDate).toLocalDate())
@@ -90,6 +80,8 @@ public class AddComputerServlet extends HttpServlet {
 							.company(new Company.CompanyBuilder(idCompany).build()).build());
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
+		} catch (DataException de) {
+			logger.error(de.getMessage());
 		} catch (DBException dbe) {
 			this.getServletContext().getRequestDispatcher("/WEB-INF/views/500.jsp").forward(request, response);
 		}

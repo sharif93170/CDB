@@ -18,6 +18,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.exception.DBException;
+import com.excilys.cdb.exception.DataException;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.mapper.ComputerDtoMapper;
@@ -92,10 +93,11 @@ public class EditComputerServlet extends HttpServlet {
 			logger.error("Number format exception : " + nfe.getMessage(), nfe);
 		} catch (SQLException sql) {
 			logger.error("SQL exception : " + sql.getMessage(), sql);
-		} catch (DBException e) {
+		} catch (DataException de) {
+			logger.error(de.getMessage());
+		} catch (DBException dbe) {
 			this.getServletContext().getRequestDispatcher("/WEB-INF/views/500.jsp").forward(request, response);
 		}
-
 		response.sendRedirect("dashboard");
 
 	}

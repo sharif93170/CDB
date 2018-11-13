@@ -14,10 +14,12 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.excilys.cdb.dao.DaoComputer;
 import com.excilys.cdb.exception.DBException;
+import com.excilys.cdb.exception.DataException;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Page;
+import com.excilys.cdb.validator.ComputerValidator;
 import com.excilys.cdb.validator.PageValidator;
 
 @Service
@@ -59,11 +61,13 @@ public class ComputerService {
 		return list;
 	}
 
-	public void create(Computer computer) throws IOException, SQLException, DBException {
+	public void create(Computer computer) throws IOException, SQLException, DBException, DataException {
+		ComputerValidator.isValid(computer);
 		daoComputer.create(computer);
 	}
 
-	public void update(int id, Computer computer) throws IOException, SQLException, DBException {
+	public void update(int id, Computer computer) throws IOException, SQLException, DBException, DataException {
+		ComputerValidator.isValid(computer);
 		daoComputer.update(id, computer);
 	}
 
