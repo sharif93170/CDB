@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.excilys.cdb.exception.DBException;
 import com.excilys.cdb.exception.DernierePageException;
@@ -37,6 +39,12 @@ public class AddComputerServlet extends HttpServlet {
 	ComputerService computerService;
 	@Autowired
 	CompanyService companyService;
+
+	@Override
+	public void init() throws ServletException {
+		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+		ctx.getAutowireCapableBeanFactory().autowireBean(this);
+	}
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

@@ -10,7 +10,7 @@ import javax.ejb.TransactionManagementType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
@@ -23,18 +23,21 @@ import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Company;
 
-@Stateless
-@TransactionManagement(TransactionManagementType.CONTAINER)
+@Service
 public class CompanyService {
 
 	static Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
-	@Autowired
-	DaoCompany daoCompany;
-	@Autowired
-	DaoComputer daoComputer;
-	@Autowired
-	private PlatformTransactionManager transactionManager;
+	private final DaoCompany daoCompany;
+	private final DaoComputer daoComputer;
+	private final PlatformTransactionManager transactionManager;
+
+	public CompanyService(DaoComputer daoComputer, DaoCompany daoCompany,
+			PlatformTransactionManager transactionManager) {
+		this.daoCompany = daoCompany;
+		this.daoComputer = daoComputer;
+		this.transactionManager = transactionManager;
+	}
 
 	public <T> List<Company> findAll()
 			throws SQLException, PremierePageException, DernierePageException, IOException, DBException {

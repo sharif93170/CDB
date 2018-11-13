@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -40,8 +39,11 @@ public class DaoComputer {
 	private final static String DELETE_BY_COMPANY_ID_SQL = "DELETE FROM computer WHERE company_id = :company_id";
 	private final static String DELETE_BY_NAME_SQL = "DELETE FROM computer WHERE name = :name";
 
-	@Autowired
-	DataSource dataSource;
+	private final DataSource dataSource;
+
+	public DaoComputer(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 
 	public int count(String name) throws IOException, SQLException, DBException {
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);

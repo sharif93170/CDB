@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.exception.DBException;
@@ -39,6 +41,12 @@ public class EditComputerServlet extends HttpServlet {
 	ComputerService computerService;
 
 	ComputerDtoMapper mapper;
+
+	@Override
+	public void init() throws ServletException {
+		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+		ctx.getAutowireCapableBeanFactory().autowireBean(this);
+	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {

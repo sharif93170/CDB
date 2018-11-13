@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -28,8 +27,11 @@ public class DaoCompany {
 	private final static String SELECT_ALL_SQL = "SELECT id, name FROM company";
 	private final static String DELETE_COMPANY_BY_ID_SQL = "DELETE FROM company WHERE id= :id";
 
-	@Autowired
-	DataSource dataSource;
+	private final DataSource dataSource;
+
+	public DaoCompany(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 
 	public List<Company> findAll() throws SQLException, IOException, DBException {
 		List<Company> listCompanies = new ArrayList<>();

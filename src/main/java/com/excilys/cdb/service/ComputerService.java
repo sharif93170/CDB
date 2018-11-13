@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -26,10 +25,13 @@ public class ComputerService {
 
 	static Logger logger = LoggerFactory.getLogger(ComputerService.class);
 
-	@Autowired
-	private DaoComputer daoComputer;
-	@Autowired
-	private PlatformTransactionManager transactionManager;
+	private final DaoComputer daoComputer;
+	private final PlatformTransactionManager transactionManager;
+
+	public ComputerService(DaoComputer daoComputer, PlatformTransactionManager transactionManager) {
+		this.daoComputer = daoComputer;
+		this.transactionManager = transactionManager;
+	}
 
 	public int count(String name) throws IOException, DBException, SQLException {
 		return daoComputer.count(name);

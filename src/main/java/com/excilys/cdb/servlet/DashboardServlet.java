@@ -46,10 +46,14 @@ public class DashboardServlet extends HttpServlet {
 	int computerTotal;
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void init() throws ServletException {
 		ApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 		ctx.getAutowireCapableBeanFactory().autowireBean(this);
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		try {
 			mapper = ComputerDtoMapper.getInstance();
 
