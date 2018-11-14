@@ -46,7 +46,7 @@ public class ComputerDtoMapper {
 
 		ComputerDTO computerDto = new ComputerDTO();
 
-		computerDto.setId(computer.getId() + "");
+		computerDto.setId(computer.getId().toString());
 		computerDto.setName(computer.getName());
 
 		if (computer.getIntroducedDate() != null) {
@@ -56,7 +56,7 @@ public class ComputerDtoMapper {
 			computerDto.setDiscontinued(computer.getDiscontinuedDate().toString());
 		}
 
-		computerDto.setCompanyId(computer.getCompany().getId() + "");
+		computerDto.setCompanyId(computer.getCompany().getId().toString());
 		computerDto.setCompanyName(computer.getCompany().getName());
 
 		return computerDto;
