@@ -2,12 +2,27 @@ package com.excilys.cdb.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "computer")
 public class Computer {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private final Long id;
 	private final String name;
+	@Column(name = "introduced")
 	private final LocalDate introducedDate;
+	@Column(name = "discontinued")
 	private final LocalDate discontinuedDate;
+	@ManyToOne(targetEntity = Company.class)
 	private final Company company;
 
 	private Computer(ComputerBuilder builder) {
