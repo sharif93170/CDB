@@ -19,7 +19,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@ComponentScan("com.excilys.cdb.dao, " + "com.excilys.cdb.service, " + "com.excilys.cdb.ui")
+@ComponentScan("com.excilys.cdb.dao, " + "com.excilys.cdb.service, " + "com.excilys.cdb.validator")
 public class RootConfig {
 
 	Logger logger = LoggerFactory.getLogger(RootConfig.class);
