@@ -1,7 +1,5 @@
 package com.excilys.cdb.service;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -13,7 +11,6 @@ import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.excilys.cdb.dao.DaoComputer;
-import com.excilys.cdb.exception.DBException;
 import com.excilys.cdb.exception.DataException;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
@@ -35,16 +32,15 @@ public class ComputerService {
 		this.transactionManager = transactionManager;
 	}
 
-	public int count(String name) throws IOException, DBException, SQLException {
+	public int count(String name) {
 		return daoComputer.count(name);
 	}
 
-	public Computer showDetails(int idComputer) throws SQLException, IOException, DBException {
+	public Computer showDetails(int idComputer) {
 		return daoComputer.showDetails(idComputer);
 	}
 
-	public <T> List<Computer> findAll()
-			throws SQLException, PremierePageException, DernierePageException, IOException, DBException {
+	public <T> List<Computer> findAll() throws PremierePageException, DernierePageException {
 		List<Computer> list;
 		PageValidator.previousPageValidator();
 		list = daoComputer.findAll(Page.getPage(), Page.getPageSize());
@@ -52,8 +48,7 @@ public class ComputerService {
 		return list;
 	}
 
-	public <T> List<Computer> findAll(String name)
-			throws SQLException, PremierePageException, DernierePageException, IOException, DBException {
+	public <T> List<Computer> findAll(String name) throws PremierePageException, DernierePageException {
 		List<Computer> list;
 		PageValidator.previousPageValidator();
 		list = daoComputer.findByName(name, Page.getPage(), Page.getPageSize());
@@ -61,33 +56,33 @@ public class ComputerService {
 		return list;
 	}
 
-	public void create(Computer computer) throws IOException, SQLException, DBException, DataException {
+	public void create(Computer computer) throws DataException {
 		ComputerValidator.isValid(computer);
 		daoComputer.create(computer);
 	}
 
-	public void update(int id, Computer computer) throws IOException, SQLException, DBException, DataException {
+	public void update(Computer computer) throws DataException {
 		ComputerValidator.isValid(computer);
-		daoComputer.update(id, computer);
+		daoComputer.update(computer);
 	}
 
-	public void deleteByName(String nameToDelete) throws IOException, SQLException, DBException {
+	public void deleteByName(String nameToDelete) {
 		daoComputer.deleteByName(nameToDelete);
 	}
 
-	public void deleteById(int idToDelete) throws IOException, SQLException, DBException {
+	public void deleteById(int idToDelete) {
 		daoComputer.deleteById(idToDelete);
 	}
 
-	public void deleteSelection(String[] idTab) throws NumberFormatException, IOException, SQLException, DBException {
+	public void deleteSelection(String[] idTab) {
 		TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 			@Override
 			protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
 				try {
 					daoComputer.deleteSelection(idTab);
-				} catch (NumberFormatException | IOException | SQLException | DBException e) {
-					logger.error(e.getMessage());
+				} catch (NumberFormatException nfe) {
+					logger.error(nfe.getMessage());
 				}
 			}
 		});

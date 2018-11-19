@@ -15,10 +15,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
-
-import com.excilys.cdb.exception.DBException;
-import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 import com.excilys.cdb.model.Company.CompanyBuilder;
@@ -45,16 +41,15 @@ public class DaoComputer {
 		this.dataSource = dataSource;
 	}
 
-	public int count(String name) throws IOException, SQLException, DBException {
+	public int count(String name) {
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("name", "%" + name + "%");
 		int count = jdbcTemplate.queryForObject(COUNT_SQL, params, Integer.class);
 		return count;
-
 	}
 
-	public Computer showDetails(int idComputer) throws IOException, SQLException, DBException {
+	public Computer showDetails(int idComputer) {
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("id", idComputer);
@@ -82,8 +77,7 @@ public class DaoComputer {
 		return jdbcTemplate.queryForObject(SELECT_DETAILS_SQL, params, rowMapper);
 	}
 
-	public List<Computer> findByName(String name, int page, int size)
-			throws SQLException, PremierePageException, IOException, DBException {
+	public List<Computer> findByName(String name, int page, int size) {
 		List<Computer> listComputers = new ArrayList<>();
 
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -117,8 +111,7 @@ public class DaoComputer {
 
 	}
 
-	public List<Computer> findAll(int page, int size)
-			throws SQLException, PremierePageException, IOException, DBException {
+	public List<Computer> findAll(int page, int size) {
 		List<Computer> listComputers = new ArrayList<>();
 
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
@@ -151,7 +144,7 @@ public class DaoComputer {
 
 	}
 
-	public void create(Computer computer) throws IOException, SQLException, DBException {
+	public void create(Computer computer) {
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("name", computer.getName(), Types.VARCHAR);
@@ -163,9 +156,10 @@ public class DaoComputer {
 				Types.LONGNVARCHAR);
 		params.addValue("id", computer.getId(), Types.LONGNVARCHAR);
 		jdbcTemplate.update(INSERT_SQL, params);
+		logger.info("Le produit " + computer.getName() + " a bien été crée.");
 	}
 
-	public void update(int idComputer, Computer computer) throws IOException, SQLException, DBException {
+	public void update(Computer computer) {
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("name", computer.getName(), Types.VARCHAR);
@@ -177,30 +171,33 @@ public class DaoComputer {
 				Types.LONGNVARCHAR);
 		params.addValue("id", computer.getId(), Types.LONGNVARCHAR);
 		jdbcTemplate.update(UPDATE_SQL, params);
+		logger.info("Le produit d'id : " + computer.getId() + " a bien été modifié.");
 	}
 
-	public void deleteById(int idComputer) throws IOException, SQLException, DBException {
+	public void deleteById(int idComputer) {
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("id", idComputer);
 		jdbcTemplate.update(DELETE_BY_ID_SQL, params);
+		logger.info("Le produit d'id : " + idComputer + " a bien été supprimé.");
 	}
 
-	public void deleteByName(String nameComputer) throws IOException, SQLException, DBException {
+	public void deleteByName(String nameComputer) {
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("name", nameComputer);
 		jdbcTemplate.update(DELETE_BY_NAME_SQL, params);
+		logger.info("Le produit " + nameComputer + " a bien été supprimé.");
 	}
 
-	public void deleteByCompanyId(int idCompany) throws IOException, SQLException, DBException {
+	public void deleteByCompanyId(int idCompany) {
 		NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("company_id", idCompany);
 		jdbcTemplate.update(DELETE_BY_COMPANY_ID_SQL, params);
 	}
 
-	public void deleteSelection(String[] idTab) throws IOException, NumberFormatException, SQLException, DBException {
+	public void deleteSelection(String[] idTab) {
 		for (int i = 0; i < idTab.length; i++) {
 			if (!("".equals(idTab[i]))) {
 				deleteById(Integer.parseInt(idTab[i]));

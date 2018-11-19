@@ -93,33 +93,25 @@ public class Main {
 				System.out.println("Liste de toute les Companies : ");
 				boolean continuer3 = true;
 				while (continuer3) {
-					try {
-						List<Company> listCompany = companyService.findAll();
-						String choix3;
-						int i = 0;
-						while (i < listCompany.size()) {
-							listCompany.stream().forEach(System.out::println);
-							i++;
-						}
-						System.out.println("Appuyez S pour page suivante, P pour page precedente, Q pour quitter.");
-						logger.info("Que voulez vous faire ? :");
-						choix3 = sc.nextLine();
-						if ("s".equals(choix3) || "S".equals(choix3)) {
-							Page.pagePlus();
-						} else if ("p".equals(choix3) || "P".equals(choix3)) {
-							Page.pageMinus();
-						} else if ("q".equals(choix3) || "Q".equals(choix3)) {
-							continuer3 = false;
-							break;
-						} else {
-							System.out.println("Mauvaise saisie, veuillez utiliser 'S', 'P' ou 'Q'.");
-						}
-					} catch (PremierePageException ppe) {
-						logger.error(ppe.getMessage());
+					List<Company> listCompany = companyService.findAll();
+					String choix3;
+					int i = 0;
+					while (i < listCompany.size()) {
+						listCompany.stream().forEach(System.out::println);
+						i++;
+					}
+					System.out.println("Appuyez S pour page suivante, P pour page precedente, Q pour quitter.");
+					logger.info("Que voulez vous faire ? :");
+					choix3 = sc.nextLine();
+					if ("s".equals(choix3) || "S".equals(choix3)) {
 						Page.pagePlus();
-					} catch (DernierePageException dpe) {
-						logger.error(dpe.getMessage());
+					} else if ("p".equals(choix3) || "P".equals(choix3)) {
 						Page.pageMinus();
+					} else if ("q".equals(choix3) || "Q".equals(choix3)) {
+						continuer3 = false;
+						break;
+					} else {
+						System.out.println("Mauvaise saisie, veuillez utiliser 'S', 'P' ou 'Q'.");
 					}
 				}
 				break;
@@ -182,7 +174,7 @@ public class Main {
 
 			case 5: // Modifier un Computer
 				System.out.println("Modification d'un Computer : ");
-				int updateId;
+				Long updateId;
 				String updateName;
 				LocalDate updateIntroduced;
 				LocalDate updateDiscontinued;
@@ -191,8 +183,7 @@ public class Main {
 				int updateDay, updateMonth, updateYear;
 
 				System.out.println("Veuillez saisir l'id du produit à modifier : ");
-				updateId = sc.nextInt();
-				sc.nextLine();
+				updateId = sc.nextLong();
 
 				System.out.println("Veuillez saisir le nouveau nom du produit : ");
 				updateName = sc.nextLine();
@@ -224,10 +215,9 @@ public class Main {
 				System.out.println("Veuillez saisir l'id de la compagnie");
 				updateIdCompany = sc.nextLong();
 
-				computerService.update(updateId,
-						new Computer.ComputerBuilder(updateName).introduceDate(updateIntroduced)
-								.discontinuedDate(updateDiscontinued)
-								.company(new Company.CompanyBuilder(updateIdCompany).build()).build());
+				computerService.update(new Computer.ComputerBuilder(updateName).id(updateId)
+						.introduceDate(updateIntroduced).discontinuedDate(updateDiscontinued)
+						.company(new Company.CompanyBuilder(updateIdCompany).build()).build());
 				break;
 
 			case 6: // Supprimer un Computer par id

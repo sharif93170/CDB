@@ -1,18 +1,12 @@
 package com.excilys.cdb.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.dto.CompanyDTO;
 import com.excilys.cdb.model.Company;
 
+@Component
 public class CompanyDtoMapper {
-
-	private static CompanyDtoMapper companyDtoMapper = new CompanyDtoMapper();
-
-	private CompanyDtoMapper() {
-	}
-
-	public static CompanyDtoMapper getInstance() {
-		return companyDtoMapper;
-	}
 
 	public Company fromCompanyDTO(CompanyDTO companyDto) {
 		Long id = Long.parseLong(companyDto.getId());

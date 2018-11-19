@@ -21,8 +21,8 @@ import com.excilys.cdb.service.ComputerService;
 
 import com.excilys.cdb.model.Computer;
 
-@Controller("companyController")
-@RequestMapping("/company")
+@Controller("computerController")
+@RequestMapping("/computer")
 public class ComputerController {
 
 	private final ComputerService computerService;
@@ -60,9 +60,8 @@ public class ComputerController {
 	}
 
 	@PutMapping
-	public ResponseEntity<Void> update(int idComputer, Computer computer)
-			throws IOException, SQLException, DBException, DataException {
-		computerService.update(idComputer, computer);
+	public ResponseEntity<Void> update(Computer computer) throws IOException, SQLException, DBException, DataException {
+		computerService.update(computer);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 

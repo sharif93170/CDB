@@ -1,12 +1,8 @@
 package com.excilys.cdb.controller;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -15,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.cdb.dto.ComputerDTO;
-import com.excilys.cdb.exception.DBException;
 import com.excilys.cdb.exception.DernierePageException;
 import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.mapper.ComputerDtoMapper;
@@ -27,17 +22,19 @@ import com.excilys.cdb.model.Page;
 @Controller
 public class DashboardController {
 
-	private final Logger logger = LoggerFactory.getLogger(DashboardController.class);
-
 	@Autowired
 	private ComputerService computerService;
-	private ComputerDtoMapper computerMapper = ComputerDtoMapper.getInstance();
+	private ComputerDtoMapper computerMapper;
+
+	public DashboardController(ComputerService computerService, ComputerDtoMapper computerMapper) {
+		this.computerService = computerService;
+		this.computerMapper = computerMapper;
+	}
 
 	@GetMapping("dashboard")
 	public String getDashboard(ModelMap model, @RequestParam(required = false, defaultValue = "") String search,
 			@RequestParam(required = false, defaultValue = "1") String page,
-			@RequestParam(required = false, defaultValue = "10") String size)
-			throws SQLException, IOException, DBException {
+			@RequestParam(required = false, defaultValue = "10") String size) {
 		List<Computer> computers;
 		List<ComputerDTO> computerPageDTO = new ArrayList<ComputerDTO>();
 		int computerTotal = 0;
@@ -69,9 +66,7 @@ public class DashboardController {
 	}
 
 	@PostMapping("dashboard")
-	public String postDeleteComputer(ModelMap model, @RequestParam String[] selection)
-			throws NumberFormatException, IOException, SQLException, DBException {
-
+	public String postDeleteComputer(ModelMap model, @RequestParam String[] selection) {
 		String[] idTab = selection[0].split(",");
 		computerService.deleteSelection(idTab);
 

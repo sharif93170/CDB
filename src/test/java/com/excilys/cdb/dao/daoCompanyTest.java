@@ -41,14 +41,14 @@ public class daoCompanyTest {
 //		}
 //	}
 
-	@Test
-	public void testFindAllNotNull() throws IOException, DBException {
-		try {
-			Assert.assertNotNull(dc.findAll());
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-			fail("Aucune company trouvée !");
-		}
-	}
+//	@Test
+//	public void testFindAllNotNull() throws IOException, DBException {
+//		try {
+//			Assert.assertNotNull(dc.findAll());
+//		} catch (SQLException e) {
+//			System.out.println(e.getMessage());
+//			fail("Aucune company trouvée !");
+//		}
+//	}
 
 }
