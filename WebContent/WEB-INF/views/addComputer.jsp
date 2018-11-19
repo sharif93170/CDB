@@ -62,8 +62,8 @@
 									id="companyId" path="companyId">
 									<form:option value="0">--</form:option>
 									<c:forEach var="company" items="${companies}">
-										<form:option value="${company.id }">
-											<c:out value="${company.name }" />
+										<form:option value="${company.id}">
+											<c:out value="${company.name}" />
 										</form:option>
 									</c:forEach>
 								</form:select>

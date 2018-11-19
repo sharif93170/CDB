@@ -1,7 +1,7 @@
 package com.excilys.cdb.controller;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +45,10 @@ public class AddComputerController {
 	@GetMapping
 	public String getAddComputer(ModelMap model) {
 		List<Company> companies = companyService.findAll();
-		List<CompanyDTO> companiesDTO = new ArrayList<CompanyDTO>();
-		for (int i = 0; i < companies.size(); i++) {
-			companiesDTO.add(companyMapper.toCompanyDTO(companies.get(i)));
-		}
+		List<CompanyDTO> companiesDTO = companies.stream().map(tmp -> {
+			CompanyDTO cpnDto = companyMapper.toCompanyDTO(tmp);
+			return cpnDto;
+		}).collect(Collectors.toList());
 		model.addAttribute("companies", companiesDTO);
 		model.addAttribute("computerDTO", new ComputerDTO());
 		return "addComputer";

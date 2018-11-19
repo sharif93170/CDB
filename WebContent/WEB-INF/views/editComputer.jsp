@@ -26,7 +26,8 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<div class="label label-default pull-right">id: ${computerId}</div>
+					<div class="label label-default pull-right">id:
+						${computerDto.id}</div>
 					<h1>
 						<spring:message code="edit.name" />
 					</h1>
@@ -34,8 +35,8 @@
 					<form:form id="editcomputer" action="editComputer" method="POST"
 						modelAttribute="computerDto">
 
-						<form:input type="hidden" value="${computerId}" id="id" name="id"
-							path="id" />
+						<form:input type="hidden" value="${computerDto.id}" id="id"
+							name="id" path="id" />
 
 						<fieldset>
 							<div class="form-group">
@@ -69,8 +70,8 @@
 									id="companyId" path="companyId">
 									<form:option value="0">--</form:option>
 									<c:forEach var="company" items="${companies}">
-										<form:option value="${company.id }">
-											<c:out value="${company.name }" />
+										<form:option value="${company.id}">
+											<c:out value="${company.name}" />
 										</form:option>
 									</c:forEach>
 								</form:select>

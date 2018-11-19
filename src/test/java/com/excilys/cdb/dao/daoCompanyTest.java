@@ -1,23 +1,23 @@
-package com.excilys.cdb.dao;
-
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.excilys.cdb.exception.DBException;
-import com.excilys.cdb.model.Company;
-
-public class daoCompanyTest {
-
-	private DaoCompany dc;
-
+//package com.excilys.cdb.dao;
+//
+//import static org.junit.Assert.*;
+//
+//import java.io.IOException;
+//import java.sql.SQLException;
+//import java.util.ArrayList;
+//
+//import org.junit.After;
+//import org.junit.Assert;
+//import org.junit.Before;
+//import org.junit.Test;
+//
+//import com.excilys.cdb.exception.DBException;
+//import com.excilys.cdb.model.Company;
+//
+//public class daoCompanyTest {
+//
+//	private DaoCompany dc;
+//
 //	@Before
 //	public void setUp() {
 //		dc = DaoCompany.getInstance();
@@ -40,7 +40,7 @@ public class daoCompanyTest {
 //			fail("Exception inattendue");
 //		}
 //	}
-
+//
 //	@Test
 //	public void testFindAllNotNull() throws IOException, DBException {
 //		try {
@@ -50,5 +50,5 @@ public class daoCompanyTest {
 //			fail("Aucune company trouvée !");
 //		}
 //	}
-
-}
+//
+//}
