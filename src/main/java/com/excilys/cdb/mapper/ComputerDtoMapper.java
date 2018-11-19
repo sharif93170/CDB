@@ -2,22 +2,16 @@ package com.excilys.cdb.mapper;
 
 import java.time.LocalDate;
 
+import org.springframework.stereotype.Component;
+
 import com.excilys.cdb.dto.ComputerDTO;
 import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
 
+@Component
 public class ComputerDtoMapper {
 
-	private static ComputerDtoMapper computerDtoMapper = new ComputerDtoMapper();
-
-	private ComputerDtoMapper() {
-	}
-
-	public static ComputerDtoMapper getInstance() {
-		return computerDtoMapper;
-	}
-
-	public Computer toComputer(ComputerDTO computerDto) {
+	public Computer fromComputerDTO(ComputerDTO computerDto) {
 
 		String computerName = computerDto.getName();
 		Long computerId = null;
@@ -42,11 +36,11 @@ public class ComputerDtoMapper {
 
 	}
 
-	public ComputerDTO fromComputer(Computer computer) {
+	public ComputerDTO toComputerDTO(Computer computer) {
 
 		ComputerDTO computerDto = new ComputerDTO();
 
-		computerDto.setId(computer.getId() + "");
+		computerDto.setId(computer.getId().toString());
 		computerDto.setName(computer.getName());
 
 		if (computer.getIntroducedDate() != null) {
@@ -56,7 +50,7 @@ public class ComputerDtoMapper {
 			computerDto.setDiscontinued(computer.getDiscontinuedDate().toString());
 		}
 
-		computerDto.setCompanyId(computer.getCompany().getId() + "");
+		computerDto.setCompanyId(computer.getCompany().getId().toString());
 		computerDto.setCompanyName(computer.getCompany().getName());
 
 		return computerDto;

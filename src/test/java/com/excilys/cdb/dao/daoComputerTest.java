@@ -1,48 +1,48 @@
-package com.excilys.cdb.dao;
-
-import static org.junit.Assert.*;
-
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.excilys.cdb.model.Company;
-import com.excilys.cdb.model.Computer;
-
-public class daoComputerTest {
-
-	private DaoComputer dc;
-
-	@Before
-	public void setUp() {
-		dc = DaoComputer.getInstance();
-	}
-
-	@After
-	public void tearDown() {
-		dc = null;
-	}
-
-	@Test
-	public void testShowDetails() {
-		try {
-			Computer cptTest = dc.showDetails(17);
-			assertEquals(Long.valueOf("17"), cptTest.getId());
-			assertEquals("Apple III Plus", cptTest.getName());
-			assertEquals("1983-12-01", cptTest.getIntroducedDate().toString());
-			assertEquals("1984-04-01", cptTest.getDiscontinuedDate().toString());
-			assertEquals(Long.valueOf("1"), cptTest.getCompany().getId());
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			fail("Les détails attendus ne sont pas ceux actuels !");
-		}
-	}
-
+//package com.excilys.cdb.dao;
+//
+//import static org.junit.Assert.*;
+//
+//import java.sql.SQLException;
+//import java.time.LocalDate;
+//import java.util.ArrayList;
+//
+//import org.junit.After;
+//import org.junit.Assert;
+//import org.junit.Before;
+//import org.junit.Test;
+//
+//import com.excilys.cdb.model.Company;
+//import com.excilys.cdb.model.Computer;
+//
+//public class daoComputerTest {
+//
+//	private DaoComputer dc;
+//
+//	@Before
+//	public void setUp() {
+//		dc = DaoComputer.getInstance();
+//	}
+//
+//	@After
+//	public void tearDown() {
+//		dc = null;
+//	}
+//
+//	@Test
+//	public void testShowDetails() {
+//		try {
+//			Computer cptTest = dc.showDetails(17);
+//			assertEquals(Long.valueOf("17"), cptTest.getId());
+//			assertEquals("Apple III Plus", cptTest.getName());
+//			assertEquals("1983-12-01", cptTest.getIntroducedDate().toString());
+//			assertEquals("1984-04-01", cptTest.getDiscontinuedDate().toString());
+//			assertEquals(Long.valueOf("1"), cptTest.getCompany().getId());
+//		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+//			fail("Les détails attendus ne sont pas ceux actuels !");
+//		}
+//	}
+//
 //	@Test
 //	public void testFindAllEquals() {
 //		try {
@@ -56,7 +56,7 @@ public class daoComputerTest {
 //			System.out.println(e.getMessage());
 //		}
 //	}
-
+//
 //	@Test
 //	public void testFindAllNotNull() {
 //		try {
@@ -66,7 +66,7 @@ public class daoComputerTest {
 //			fail("Aucun computer trouvée !");
 //		}
 //	}
-
+//
 //	@Test
 //	public void testCreate() {
 //		LocalDate introduced = LocalDate.of(2018, 01, 01);
@@ -83,7 +83,7 @@ public class daoComputerTest {
 //			fail("Le produit n'a pas été crée");
 //		}
 //	}
-
+//
 //	@Test
 //	public void testUpdate() {
 //		LocalDate introduced = LocalDate.of(2018, 01, 01);
@@ -97,7 +97,7 @@ public class daoComputerTest {
 //			fail("Le produit n'a pas été crée");
 //		}
 //	}
-
+//
 //	@Test
 //	public void testDeleteByName() {
 //		LocalDate introduced = LocalDate.of(2018, 01, 01);
@@ -112,5 +112,6 @@ public class daoComputerTest {
 //			fail("Le produit n'a pas été crée");
 //		}
 //	}
-
-}
+//
+//}
+//

@@ -12,12 +12,14 @@
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
 		<slf4j.version>1.7.25</slf4j.version>
-		<servlet.version>2.0</servlet.version>
+		<jsp.version>2.0</jsp.version>
+		<servlet.version>3.0.1</servlet.version>
 		<jstl.version>1.2</jstl.version>
 		<jquery.validation.version>1.17.0-1</jquery.validation.version>
 		<hikariCP.version>3.2.0</hikariCP.version>
 		<javax.transaction.version>1.1</javax.transaction.version>
 		<javax.ejb.version>3.0</javax.ejb.version>
+		<spring.version>5.1.2.RELEASE</spring.version>
 	</properties>
 	<build>
 		<plugins>
@@ -69,6 +71,12 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jsp-api</artifactId>
+			<version>${jsp.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
 			<version>${servlet.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -98,6 +106,18 @@
 			<version>${javax.ejb.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+
 	</dependencies>
 	<reporting>
 		<plugins>

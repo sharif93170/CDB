@@ -1,74 +1,49 @@
 package com.excilys.cdb.service;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
-
-import javax.annotation.Resource;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import com.excilys.cdb.dao.DaoCompany;
 import com.excilys.cdb.dao.DaoComputer;
-import com.excilys.cdb.exception.DBException;
-import com.excilys.cdb.exception.DernierePageException;
-import com.excilys.cdb.exception.PremierePageException;
 import com.excilys.cdb.model.Company;
 
-@Stateless
-@TransactionManagement(TransactionManagementType.CONTAINER)
+@Service
 public class CompanyService {
 
 	static Logger logger = LoggerFactory.getLogger(CompanyService.class);
 
-	private static CompanyService companyService = null;
-	DaoCompany daoCompany;
-	DaoComputer daoComputer;
+	private final DaoCompany daoCompany;
+	private final DaoComputer daoComputer;
+	private final PlatformTransactionManager transactionManager;
 
-	@Resource
-	private SessionContext context;
-
-	private CompanyService() {
-		daoCompany = DaoCompany.getInstance();
-		daoComputer = DaoComputer.getInstance();
+	public CompanyService(DaoComputer daoComputer, DaoCompany daoCompany,
+			PlatformTransactionManager transactionManager) {
+		this.daoCompany = daoCompany;
+		this.daoComputer = daoComputer;
+		this.transactionManager = transactionManager;
 	}
 
-	public static CompanyService getInstance() {
-		if (companyService == null) {
-			companyService = new CompanyService();
-		}
-		return companyService;
+	public <T> List<Company> findAll() {
+		return daoCompany.findAll();
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public <T> List<Company> findAll()
-			throws SQLException, PremierePageException, DernierePageException, IOException, DBException {
-		List<Company> list;
-		try {
-			list = daoCompany.findAll();
-		} catch (DBException dbe) {
-			context.setRollbackOnly();
-			throw dbe;
-		}
-		return list;
-	}
+	public void delete(int id) {
+		TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+			@Override
+			protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
+				daoComputer.deleteByCompanyId(id);
+				daoCompany.delete(id);
+			}
+		});
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void delete(int id) throws IOException, DBException, SQLException {
-		try {
-			daoComputer.deleteByCompanyId(id);
-			daoCompany.delete(id);
-		} catch (DBException dbe) {
-			context.setRollbackOnly();
-			throw dbe;
-		}
 	}
 
 }

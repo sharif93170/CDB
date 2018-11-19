@@ -1,7 +1,12 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Computer Database</title>
+<title><spring:message code="label.title" /></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- Bootstrap -->
 <link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -11,8 +16,8 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database </a>
+			<a class="navbar-brand" href="dashboard"><spring:message
+					code="label.header" /></a>
 		</div>
 	</header>
 
@@ -20,40 +25,60 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<h1>Add Computer</h1>
-					<form id="addComputer" action="addComputer" method="POST">
+					<h1>
+						<spring:message code="add.name" />
+					</h1>
+					<form:form id="addComputer" action="addComputer" method="POST"
+						modelAttribute="computerDTO">
 						<fieldset>
 							<div class="form-group">
-								<label for="computerName">Computer name</label> <input
-									type="text" class="form-control" id="computerName"
-									placeholder="Computer name" name="computerName">
+								<form:label for="computerName" path="name">
+									<spring:message code="add.name" />
+								</form:label>
+								<form:input type="text" name="computerName" class="form-control"
+									id="computerName" path="name" placeholder="Computer name" />
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date</label> <input
-									type="date" class="form-control" id="introduced"
-									placeholder="Introduced date" name="introduced">
+								<form:label for="introduced" path="introduced">
+									<spring:message code="label.introduced" />
+								</form:label>
+								<form:input type="date" class="form-control" id="introduced"
+									name="introduced" placeholder="Introduced date"
+									path="introduced" />
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date</label> <input
-									type="date" class="form-control" id="discontinued"
-									placeholder="Discontinued date" name="discontinued">
+								<form:label for="discontinued" path="discontinued">
+									<spring:message code="label.discontinued" />
+								</form:label>
+								<form:input type="date" class="form-control" id="discontinued"
+									name="discontinued" placeholder="Discontinued date"
+									path="discontinued" />
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label> <select
-									class="form-control" id="companyId" name="companyId">
-									<option value="0">--</option>
+								<form:label for="companyId" path="companyId">
+									<spring:message code="label.company" />
+								</form:label>
+								<form:select class="form-control" name="companyId"
+									id="companyId" path="companyId">
+									<form:option value="0">--</form:option>
 									<c:forEach var="company" items="${companies}">
-										<option value="${company.id }"><c:out
-												value="${company.id } - ${company.name }" /></option>
+										<form:option value="${company.id}">
+											<c:out value="${company.name}" />
+										</form:option>
 									</c:forEach>
-								</select>
+								</form:select>
+
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Add" class="btn btn-primary">
-							or <a href="dashboard" class="btn btn-default">Cancel</a>
+							<input type="submit" value="<spring:message code="add.button" />"
+								class="btn btn-primary"> or <a href="dashboard"
+								class="btn btn-default"><spring:message code="add.cancel" /></a>
 						</div>
-					</form>
+					</form:form>
+					<div>
+						<c:out value="${internError}" />
+					</div>
 				</div>
 			</div>
 		</div>
