@@ -1,91 +1,96 @@
 package com.excilys.cdb.service;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
-import org.springframework.transaction.support.TransactionTemplate;
 
-import com.excilys.cdb.dao.DaoComputer;
-import com.excilys.cdb.exception.DataException;
-import com.excilys.cdb.exception.DernierePageException;
-import com.excilys.cdb.exception.PremierePageException;
+import com.excilys.cdb.dao.ComputerRepository;
+import com.excilys.cdb.dto.ComputerDTO;
+import com.excilys.cdb.model.Company;
 import com.excilys.cdb.model.Computer;
-import com.excilys.cdb.model.Page;
-import com.excilys.cdb.validator.ComputerValidator;
-import com.excilys.cdb.validator.PageValidator;
 
 @Service
+@EnableJpaRepositories(basePackages = "com.excilys.cdb.dao")
+@Scope("singleton")
 public class ComputerService {
 
-	static Logger logger = LoggerFactory.getLogger(ComputerService.class);
+	@Autowired
+	private ComputerRepository computerRepository;
 
-	private final DaoComputer daoComputer;
-	private final PlatformTransactionManager transactionManager;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ComputerService.class);
 
-	public ComputerService(DaoComputer daoComputer, PlatformTransactionManager transactionManager) {
-		this.daoComputer = daoComputer;
-		this.transactionManager = transactionManager;
+	public boolean addComputer(String name, String introduced, String discontinued, int company_id) {
+		LocalDate dateIntroduced = this.checkDateIsCorrect(introduced);
+		LocalDate dateDiscontinued = this.checkDateIsCorrect(discontinued);
+		computerRepository.save(
+				new Computer.ComputerBuilder(name).introduceDate(dateIntroduced).discontinuedDate(dateDiscontinued)
+						.company(new Company.CompanyBuilder(Long.valueOf(company_id)).build()).build());
+		return true;
 	}
 
-	public int count(String name) {
-		return daoComputer.count(name);
+	public boolean editComputer(int id, String name, String introduced, String discontinued, int company_id) {
+		LocalDate dateIntroduced = this.checkDateIsCorrect(introduced);
+		LocalDate dateDiscontinued = this.checkDateIsCorrect(discontinued);
+		computerRepository.save(new Computer.ComputerBuilder(name).id(Long.valueOf(id)).introduceDate(dateIntroduced)
+				.discontinuedDate(dateDiscontinued)
+				.company(new Company.CompanyBuilder(Long.valueOf(company_id)).build()).build());
+		return true;
 	}
 
-	public Computer showDetails(int idComputer) {
-		return daoComputer.showDetails(idComputer);
+	public int getNumberComputers() {
+		return (int) computerRepository.count();
 	}
 
-	public <T> List<Computer> findAll() throws PremierePageException, DernierePageException {
-		List<Computer> list;
-		PageValidator.previousPageValidator();
-		list = daoComputer.findAll(Page.getPage(), Page.getPageSize());
-		PageValidator.nextPageValidator(list);
-		return list;
+	public boolean deleteComputer(String selection) {
+		String[] deleteSelected = selection.split(",");
+		boolean isDeleteOk = true;
+
+		for (int i = 0; i < deleteSelected.length; i++) {
+			computerRepository.deleteById(Integer.valueOf(deleteSelected[i]));
+			LOGGER.info("isdeleteok -> " + isDeleteOk);
+		}
+		return isDeleteOk;
 	}
 
-	public <T> List<Computer> findAll(String name) throws PremierePageException, DernierePageException {
-		List<Computer> list;
-		PageValidator.previousPageValidator();
-		list = daoComputer.findByName(name, Page.getPage(), Page.getPageSize());
-		PageValidator.nextPageValidator(list);
-		return list;
+	public ArrayList<Computer> getComputersByLimitAndOffset(int limit, int offset) {
+		return computerRepository.findWithLimitOffset(offset, limit);
 	}
 
-	public void create(Computer computer) throws DataException {
-		ComputerValidator.isValid(computer);
-		daoComputer.create(computer);
+	public ArrayList<Computer> getComputersByName(String name) {
+		return computerRepository.findByName(name);
+
 	}
 
-	public void update(Computer computer) throws DataException {
-		ComputerValidator.isValid(computer);
-		daoComputer.update(computer);
+	public ArrayList<Computer> getComputersByCompanyName(String search) {
+		return computerRepository.findByCompanyName(search);
 	}
 
-	public void deleteByName(String nameToDelete) {
-		daoComputer.deleteByName(nameToDelete);
-	}
+	public LocalDate checkDateIsCorrect(String date) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate localDate;
 
-	public void deleteById(int idToDelete) {
-		daoComputer.deleteById(idToDelete);
-	}
-
-	public void deleteSelection(String[] idTab) {
-		TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-			@Override
-			protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
-				try {
-					daoComputer.deleteSelection(idTab);
-				} catch (NumberFormatException nfe) {
-					logger.error(nfe.getMessage());
-				}
+		if (!date.isEmpty()) {
+			try {
+				localDate = LocalDate.parse(date, formatter);
+				return localDate;
+			} catch (DateTimeParseException e) {
+				return null;
 			}
-		});
+		} else {
+			return null;
+		}
 	}
 
 }

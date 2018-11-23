@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Computer-database</groupId>
 	<artifactId>Computer-database</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>pom</packaging>
 	<properties>
 		<mysql.version>8.0.13</mysql.version>
 		<junit.version>4.12</junit.version>
@@ -19,9 +17,10 @@
 		<hikariCP.version>3.2.0</hikariCP.version>
 		<!-- <javax.transaction.version>1.1</javax.transaction.version> -->
 		<!-- <javax.ejb.version>3.0</javax.ejb.version> -->
-		<spring.version>5.1.2.RELEASE</spring.version>
-		<spring.data.jpa.version>2.1.2.RELEASE</spring.data.jpa.version>
+		<spring.version>5.0.1.RELEASE</spring.version>
+		<spring.data.jpa.version>2.0.1.RELEASE</spring.data.jpa.version>
 		<hibernate.jpa.version>1.0.1.Final</hibernate.jpa.version>
+		<hibernate.version>5.2.11.Final</hibernate.version>
 	</properties>
 	<build>
 		<plugins>
@@ -75,6 +74,12 @@
 			<artifactId>jsp-api</artifactId>
 			<version>${jsp.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -124,11 +129,15 @@
 			<version>${spring.data.jpa.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.0-api</artifactId>
 			<version>${hibernate.jpa.version}</version>
 		</dependency>
-
 	</dependencies>
 	<reporting>
 		<plugins>
@@ -143,4 +152,12 @@
 			</plugin>
 		</plugins>
 	</reporting>
+  <modules>
+    <module>core</module>
+    <module>persistence</module>
+    <module>service</module>
+    <module>binding</module>
+    <module>webapp</module>
+    <module>console</module>
+  </modules>
 </project>

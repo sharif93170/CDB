@@ -1,23 +1,37 @@
 package com.excilys.cdb.dto;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class ComputerDTO {
 
-	private String id;
+	private int id;
 	private String name;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private String introduced;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private String discontinued;
-	private String companyId;
+	private int companyId;
 	private String companyName;
 
 	public ComputerDTO() {
 		super();
 	}
 
-	public String getId() {
+	public ComputerDTO(int id, String name, String introduced, String discontinued, int companyId, String companyName) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.introduced = introduced;
+		this.discontinued = discontinued;
+		this.companyId = companyId;
+		this.companyName = companyName;
+	}
+
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -45,11 +59,11 @@ public class ComputerDTO {
 		this.discontinued = discontinued;
 	}
 
-	public String getCompanyId() {
+	public int getCompanyId() {
 		return companyId;
 	}
 
-	public void setCompanyId(String companyId) {
+	public void setCompanyId(int companyId) {
 		this.companyId = companyId;
 	}
 

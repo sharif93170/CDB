@@ -1,24 +1,26 @@
 package com.excilys.cdb.mapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import org.springframework.stereotype.Component;
 
-import com.excilys.cdb.dto.CompanyDTO;
 import com.excilys.cdb.model.Company;
 
 @Component
 public class CompanyDtoMapper {
 
-	public Company fromCompanyDTO(CompanyDTO companyDto) {
-		Long id = Long.parseLong(companyDto.getId());
-		String name = companyDto.getName();
+	public Company mappToCompany(Long id, String name) {
 		return new Company.CompanyBuilder(id).name(name).build();
 	}
 
-	public CompanyDTO toCompanyDTO(Company company) {
-		CompanyDTO companyDto = new CompanyDTO();
-		companyDto.setId(company.getId().toString());
-		companyDto.setName(company.getName());
-		return companyDto;
+	public Company mappToCompany(ResultSet rs) {
+		Company company = null;
+		try {
+			company = new Company.CompanyBuilder(rs.getLong(1)).name(rs.getString(2)).build();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return company;
 	}
-
 }

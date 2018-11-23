@@ -1,49 +1,42 @@
 package com.excilys.cdb.service;
 
-import java.util.List;
+import java.util.ArrayList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
-import org.springframework.transaction.support.TransactionTemplate;
 
-import com.excilys.cdb.dao.DaoCompany;
-import com.excilys.cdb.dao.DaoComputer;
+import com.excilys.cdb.dao.CompanyRepository;
+import com.excilys.cdb.dao.ComputerRepository;
 import com.excilys.cdb.model.Company;
 
 @Service
+@EnableJpaRepositories(basePackages = "com.excilys.cdb.dao")
+@Scope("singleton")
 public class CompanyService {
 
-	static Logger logger = LoggerFactory.getLogger(CompanyService.class);
+	@Autowired
+	private CompanyRepository companyRepository;
 
-	private final DaoCompany daoCompany;
-	private final DaoComputer daoComputer;
-	private final PlatformTransactionManager transactionManager;
+	@Autowired
+	private ComputerRepository computerRepository;
 
-	public CompanyService(DaoComputer daoComputer, DaoCompany daoCompany,
-			PlatformTransactionManager transactionManager) {
-		this.daoCompany = daoCompany;
-		this.daoComputer = daoComputer;
-		this.transactionManager = transactionManager;
+	public ArrayList<Company> getCompanies() {
+		return (ArrayList<Company>) companyRepository.findAll();
 	}
 
-	public <T> List<Company> findAll() {
-		return daoCompany.findAll();
+	public boolean checkIdCompany(long id) {
+		return companyRepository.findById(id).isPresent();
 	}
 
-	public void delete(int id) {
-		TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-			@Override
-			protected void doInTransactionWithoutResult(TransactionStatus transactionStatus) {
-				daoComputer.deleteByCompanyId(id);
-				daoCompany.delete(id);
-			}
-		});
-
+	@Transactional(rollbackOn = Exception.class)
+	public boolean deleteCompanyById(long id) {
+		computerRepository.deleteComputersByCompanyId(id);
+		companyRepository.deleteById(id);
+		return true;
 	}
 
 }
