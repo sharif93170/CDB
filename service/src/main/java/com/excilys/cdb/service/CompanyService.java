@@ -1,41 +1,57 @@
 package com.excilys.cdb.service;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import javax.transaction.Transactional;
-
-import com.excilys.cdb.model.Company;
-import com.excilys.cdb.persistence.CompanyRepository;
-import com.excilys.cdb.persistence.ComputerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-@Service("companyService")
-@EnableJpaRepositories(basePackages = "com.excilys.cdb.persistence")
-@Scope("singleton")
+import com.excilys.cdb.dao.CompanyDao;
+import com.excilys.cdb.dao.ComputerDao;
+import com.excilys.cdb.model.Company;
+
+@Service
 public class CompanyService {
 
-	@Autowired
-	private CompanyRepository companyRepository;
+	private CompanyDao companyDao;
+	private ComputerDao computerDao;
 
-	@Autowired
-	private ComputerRepository computerRepository;
+	static final Logger LOGGER = LoggerFactory.getLogger(CompanyService.class);
 
-	public ArrayList<Company> getCompanies() {
-		return (ArrayList<Company>) companyRepository.findAll();
+	private CompanyService(CompanyDao companyDAO, ComputerDao computerDao) {
+		this.companyDao = companyDAO;
+		this.computerDao = computerDao;
 	}
 
-	public boolean checkIdCompany(long id) {
-		return companyRepository.findById(id).isPresent();
+	public Company findById(Long id) {
+		return companyDao.findById(id).get();
 	}
 
-	@Transactional(rollbackOn = Exception.class)
-	public boolean deleteCompanyById(long id) {
-		computerRepository.deleteComputersByCompanyId(id);
-		companyRepository.deleteById(id);
-		return true;
+	public List<Company> findAll() {
+		return companyDao.findAll();
+	}
+
+	public Page<Company> findLimitNumberOfResult(int pageIndex, int numberOfResultByPage) {
+		Pageable pageable = new PageRequest(pageIndex, numberOfResultByPage);
+		return companyDao.findAll(pageable);
+	}
+
+	public List<Company> findbyName(String name) {
+		return companyDao.findByNameContaining(name);
+	}
+
+	public int delete(Long id) {
+		if (findById(id).getId() == 0) {
+			LOGGER.info("Company that you want to delete don't exist");
+			return 0;
+		} else {
+			computerDao.deleteAllByCompanyIdIn(1l);
+			companyDao.delete(companyDao.findById(1l).get());
+			return 1;
+		}
 	}
 
 }

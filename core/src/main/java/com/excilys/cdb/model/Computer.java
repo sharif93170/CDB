@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.springframework.lang.Nullable;
-
 @Entity
 @Table(name = "computer")
 public class Computer {
@@ -23,13 +21,10 @@ public class Computer {
 	private final Long id;
 	@Column(name = "name")
 	private final String name;
-	@Nullable
 	@Column(name = "introduced")
 	private final LocalDate introducedDate;
-	@Nullable
 	@Column(name = "discontinued")
 	private final LocalDate discontinuedDate;
-	@Nullable
 	@ManyToOne
 	@JoinColumn(name = "company_id")
 	private final Company company;
