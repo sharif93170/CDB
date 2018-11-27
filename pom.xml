@@ -6,7 +6,8 @@
 	<groupId>Computer-database</groupId>
 	<artifactId>Computer-database</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>pom</packaging>
+
 	<properties>
 		<mysql.version>8.0.13</mysql.version>
 		<junit.version>4.12</junit.version>
@@ -21,6 +22,16 @@
 		<javax.ejb.version>3.0</javax.ejb.version>
 		<spring.version>5.1.2.RELEASE</spring.version>
 	</properties>
+
+	<modules>
+		<module>core</module>
+		<module>persistence</module>
+		<module>service</module>
+		<module>binding</module>
+		<module>webapp</module>
+		<module>console</module>
+	</modules>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -117,8 +128,8 @@
 			<version>${spring.version}</version>
 		</dependency>
 
-
 	</dependencies>
+
 	<reporting>
 		<plugins>
 			<plugin>
@@ -132,4 +143,5 @@
 			</plugin>
 		</plugins>
 	</reporting>
+
 </project>
