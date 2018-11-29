@@ -17,7 +17,7 @@ import com.excilys.cdb.model.Role;
 @Repository
 public class DaoUser {
 
-	private final static String FIND_ALL_USERS_SQL = "SELECT id, name, password, role FROM user";
+	private final static String FIND_ALL_USERS_SQL = "SELECT user.id, user.name, user.password, user.role, role.id, role.role_name FROM user LEFT JOIN role ON user.id = role.id where name = :username";
 
 	private final DataSource dataSource;
 
@@ -34,9 +34,10 @@ public class DaoUser {
 			public User mapRow(ResultSet rs, int pRowNum) throws SQLException {
 				User user;
 				Role role = new Role();
-				role.setName(rs.getString("role"));
-				UserBuilder usrBuilder = new User.UserBuilder(rs.getString("name")).id(rs.getLong("id"))
-						.password(rs.getString("password")).role(role);
+				role.setId(rs.getLong("user.role"));
+				role.setName(rs.getString("role.role_name"));
+				UserBuilder usrBuilder = new User.UserBuilder(rs.getString("user.name")).id(rs.getLong("user.id"))
+						.password(rs.getString("user.password")).role(role);
 				user = usrBuilder.build();
 
 				return user;
