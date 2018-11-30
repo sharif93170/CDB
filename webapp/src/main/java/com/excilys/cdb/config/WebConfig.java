@@ -20,7 +20,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 @Configuration
 @EnableWebMvc
 @ComponentScan({ "com.excilys.cdb.config", "com.excilys.cdb.mapper", "com.excilys.cdb.controller",
-		"com.excilys.cdb.dto" })
+		"com.excilys.cdb.rest", "com.excilys.cdb.dto" })
 public class WebConfig implements WebMvcConfigurer {
 
 	Logger logger = LoggerFactory.getLogger(WebConfig.class);

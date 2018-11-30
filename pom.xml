@@ -21,6 +21,8 @@
 		<javax.ejb.version>3.0</javax.ejb.version>
 		<spring.version>5.1.2.RELEASE</spring.version>
 		<spring.security.version>5.1.1.RELEASE</spring.security.version>
+		<jackson.version>2.9.7</jackson.version>
+		<resteasy.version>3.6.2.Final</resteasy.version>
 	</properties>
 
 	<modules>
@@ -131,6 +133,16 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>${resteasy.version}</version>
 		</dependency>
 	</dependencies>
 

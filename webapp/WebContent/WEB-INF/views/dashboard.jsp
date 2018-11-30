@@ -28,9 +28,11 @@
 					<button type="button" class="btn btn-default">
 						<spring:message code="english" />
 					</button>
-				</a>
+				</a> <a href="logout"><button type="button" class="btn btn-default">
+						<i class="fa fa-sign-out" aria-hidden="true"></i>
+					</button></a>
 			</div>
-		</div>
+		</div> 
 	</header>
 
 	<section id="main">
